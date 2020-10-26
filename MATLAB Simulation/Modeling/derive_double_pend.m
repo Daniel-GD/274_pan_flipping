@@ -66,9 +66,10 @@ b = A*ddq - g;
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
-matlabFunction(A,'file',['A_' name],'vars',{z p});
-matlabFunction(b,'file',['b_' name],'vars',{z u p});
-matlabFunction(E,'file',['energy_' name],'vars',{z p});
-matlabFunction(T,'file',['kinetic_energy_' name],'vars',{z p});
-matlabFunction(V,'file',['potential_energy_' name],'vars',{z p});
-matlabFunction(keypoints,'file',['keypoints_' name],'vars',{z p});
+directory = '../AutoDerived/';
+matlabFunction(A,'file',[directory 'A_' name],'vars',{z p});
+matlabFunction(b,'file',[directory 'b_' name],'vars',{z u p});
+matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
+matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
+matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});
+matlabFunction(keypoints,'file',[directory 'keypoints_' name],'vars',{z p});

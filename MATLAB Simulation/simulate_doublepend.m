@@ -1,19 +1,27 @@
 function simulate_doublepend()
     close all
-    %% Definte fixed paramters
-    c1= .5;
-    c2=.25;
-    l1 = 1;
-    l2=.5;
-    m1 = 1;
-    m2 = 1;
+    %% Definite fixed paramters
+    l1 = .1;
+    l2= .2;
+%     l1 = .05;
+%     l2=.1;
+    c1= .9*l1;
+    c2=.5*l2;
+    m1 = .8;
+    m2 = .4;
+%     m1 = 5
+%     m2 = 5
     I1=.005;
     I2 = I1;
     k = 3;
     kappa = .5;
-    th1_0 = 3;
+    th1_0 = pi/2;
     th2_0 = 0;
-    g = 10;
+    g = 9.81;
+    
+    T1_0=1.37/2;
+    T2_0=1.37/2;
+    u0= [T1_0 T2_0]';%[1.4e-5 0]';
 
     p   =  [c1; c2; l1; l2; m1; m2; I1; I2; k; kappa; th1_0; th2_0; g];         % parameters
 
@@ -26,7 +34,7 @@ function simulate_doublepend()
     z_out = zeros(4,num_steps);
     z_out(:,1) = z0;
     for i=1:num_steps-1
-        dz = dynamics(z_out(:,i), p);
+        dz = dynamics(z_out(:,i), p, u0);
         z_out(:,i+1) = z_out(:,i) + dz*dt;
 %         z_out(3:4,i+1) = z_out(3:4,i) + dz(3:4)*dt;
 %         z_out(1:2,i+1) = z_out(1:2,i) + z_out(3:4,i+1)*dt; % + 0.5*dz(3:4)*dt*dt;
@@ -67,7 +75,7 @@ function simulate_doublepend()
     h_title = title('t=0.0s');
     
     axis equal
-    axis([-2 2 -2 1.5]);
+    axis([-(l1+l2) (l1+l2) -(l1+l2) (l1+l2) ]);
     skip_frame = 1000;
     
     %Step through and update animation
@@ -106,14 +114,15 @@ function simulate_doublepend()
     end
 end
 
-function dz = dynamics(z,p)
+function dz = dynamics(z,p, u)
     % Get mass matrix
     A = A_doublepend(z,p);
     
     % Get forces
-    u = [0 0]';
-    u = [ 0 -5*z(4)]';
-    u = [ 0 1]';
+%     u = [0 0]';
+%     u=u;
+%     u = [ 0 -5*z(4)]';
+%     u = [ 0 1]';
     b = b_doublepend(z,u, p);
     
     % Solve for qdd
