@@ -66,7 +66,7 @@ b = A*ddq - g;
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
-directory = '../AutoDerived/';
+directory = '../../AutoDerived/Arm/';
 matlabFunction(A,'file',[directory 'A_' name],'vars',{z p});
 matlabFunction(b,'file',[directory 'b_' name],'vars',{z u p});
 matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});

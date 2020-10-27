@@ -6,7 +6,12 @@
 
 % pwd is the Present Working Directory
 addpath([pwd '/Modeling'])
+addpath([pwd '/Modeling/Arm'])
+addpath([pwd '/Modeling/Pancake'])
 % addpath([pwd '/Visualization'])
 addpath([pwd '/AutoDerived'])
+addpath([pwd '/AutoDerived/Arm'])
+addpath([pwd '/AutoDerived/Pancake'])
+
 % addpath([pwd '/Optimization'])
 addpath([pwd '/Misc'])
