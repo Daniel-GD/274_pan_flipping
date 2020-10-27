@@ -13,5 +13,8 @@ addpath([pwd '/AutoDerived'])
 addpath([pwd '/AutoDerived/Arm'])
 addpath([pwd '/AutoDerived/Pancake'])
 
+addpath([pwd '/Simulation'])
+addpath([pwd '/Simulation/Arm'])
+addpath([pwd '/Simulation/Pancake'])
 % addpath([pwd '/Optimization'])
 addpath([pwd '/Misc'])
