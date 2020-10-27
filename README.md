@@ -5,7 +5,7 @@ Repository to hold all the MATLAB code for team 1's 2.74 final project
 Need to run setpath before running any file
 
  # Authors
- Daniel Gonzalez Diaz
- Laura Huang
- Uriel Magana Salgado
- Sebastian Uribe
+ Daniel Gonzalez Diaz  
+ Laura Huang  
+ Uriel Magana Salgado  
+ Sebastian Uribe  
