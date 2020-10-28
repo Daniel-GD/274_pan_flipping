@@ -7,7 +7,7 @@ function simulate_pancake()
     x0=1;
     y0=1;
     th0=0;
-    g=0.001;
+    g=0;
 %     g=9.81;
     
     dx0=0;
@@ -20,7 +20,7 @@ function simulate_pancake()
     
 %     Fx=0.001;
     Fy=.001;
-%     Tau=0.001;
+    Tau=0.0005;
     u=[Fx; Fy; Tau]; 
 
     p=[l; m; I; x0; y0; th0; g];
@@ -52,7 +52,7 @@ function simulate_pancake()
     
     title('Pose vs Time')
     xlabel('Time (s)'); ylabel('Joint Angle (rads)');
-    legend('x','y')
+    legend('x','y', '\theta')
     
     
     %% Compute Energy

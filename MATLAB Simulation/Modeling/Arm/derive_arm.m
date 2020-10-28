@@ -1,4 +1,4 @@
-name = 'doublepend';
+name = 'arm';
 
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
 syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 k kappa l0 th1_0 th2_0 g F tau1 tau2 real
