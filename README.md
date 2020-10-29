@@ -17,6 +17,7 @@ Need to run setpath before running any file
 - [ ] Contact Modeling between pan and pancake
 - [ ] Add 3rd degree of freedom to arm 
 - [ ] Add spring to arm
+- [ ] MBED Side
 
  ## Authors ##
  Daniel Gonzalez Diaz  
