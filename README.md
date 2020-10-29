@@ -5,7 +5,7 @@ Repository to hold all the MATLAB code for team 1's 2.74 final project
 Need to run setpath before running any file
 
 ## Structure: ##
-Matlab simulation
+### Matlab simulation ###
 * Modeling -> Derives equation of motion for arm and pancake model
 * AutoDerived -> Stores all the auto-generated functions from modeling
 * Simulation -> Hybrid simulation of arm and pancake system
