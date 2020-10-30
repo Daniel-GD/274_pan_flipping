@@ -15,6 +15,7 @@ Need to run setpath before running any file
 
 ## Still need to implement: ##
 - [ ] Contact Modeling between pan and pancake
+ - [ ] Implement simulate_contact.m
 - [ ] Add 3rd degree of freedom to arm 
 - [ ] Add spring to arm
 - [ ] MBED Side
