@@ -47,9 +47,9 @@ function animate_system(arm, pk, p, tspan)
         rC = arm_keypoints(:,4); %position vector to point C
         
         %Get pancake keypoints 
-        rc_pk = pk_keypoints(:,1); % position vector to the CoM of link 1
-        rA_pk = pk_keypoints(:,2); %position vector to point B
-        rB_pk = pk_keypoints(:,3); % position vector to the CoM of link 2
+        rc_pk = pk_keypoints(:,1); % position vector to the CoM of pancake
+        rA_pk = pk_keypoints(:,2); %position vector to point A in pancake
+        rB_pk = pk_keypoints(:,3); % position vector to point B in pancake
 
         set(h_title,'String',  sprintf('t=%.2f',t) ); % update title
         
