@@ -17,7 +17,7 @@ Need to run setpath before running any file
 - [ ] Contact Modeling between pan and pancake. (Implement simulate_contact.m)
 - [ ] Add 3rd degree of freedom to arm 
 - [ ] Add spring to arm
-= [ ] Start optimzation code template
+- [ ] Create optimzation code template
 - [ ] MBED Side
 
  ## Authors ##
