@@ -14,11 +14,11 @@ I2 = I1;
 k = 3;
 kappa = .5;
 
-th1_0 = pi/2;
+th1_0 = pi/2 +.1;
 th2_0 = 0;
 dth1_0=0;
 dth2_0=0;
-g = 9.81;
+g = 0;% 9.81;
 
 T1_0=0;
 T2_0=0;
@@ -35,7 +35,7 @@ I=.0001;
 x0=.2;
 y0=.2;
 th0=0;
-%     g=9.81;
+g=9.81;
 
 dx0=0;
 dy0=0;
@@ -54,8 +54,8 @@ p= struct('arm',p_arm,'pk',p_pk);
 z0= struct('arm',z0_arm,'pk',z0_pk);
 
 % Define Simulation Paramters
-tf=.3;
+tf=.24;
 dt=.00001;
 
-[arm, pk, tspan]=simulate_system(z0, p, u0, tf, dt);
-animate_system(arm, pk, p, tspan);
+[arm, pk, contact_pts, tspan]=simulate_system(z0, p, u0, tf, dt);
+animate_system(arm, pk, contact_pts, p, tspan);

@@ -1,4 +1,4 @@
-function animate_system(arm, pk, p, tspan)
+function animate_system(arm, pk, contact_pts, p, tspan)
     close all
     z_out_arm=arm.z_out;
     z_out_pk=pk.z_out;
@@ -19,13 +19,15 @@ function animate_system(arm, pk, p, tspan)
     h_pk_line.Color=[181 101 30]./255;
     h_pk_com =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','black');
     
+    % Prepare contact plot handles
+    h_contact =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
     xlabel('x')
     ylabel('y');
     h_title = title('t=0.0s');
     
     axis equal
     axis([-.3 .3 -.3 .3]);
-    skip_frame = 1000;
+    skip_frame = 50;
     
     %Step through and update animation
     for i=1:numel(tspan)
@@ -67,6 +69,10 @@ function animate_system(arm, pk, p, tspan)
         
         set(h_c2_mark,'XData',[rc2(1)]);
         set(h_c2_mark,'YData',[rc2(2)]);
+        
+        %Plot contact point (NaN doesnt plot anything)
+        set(h_contact,'XData',[contact_pts(1,i)]);
+        set(h_contact,'YData',[contact_pts(2,i)]);
         
         
         %Set pancakes
