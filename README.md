@@ -1,6 +1,13 @@
 # 274_pan_flipping
 Repository to hold all the MATLAB code for team 1's 2.74 final project  
+
+## MDEB Details ##
 MBED Link: https://os.mbed.com/users/suribe/code/pan_flipping/
+How to update:
+1. import code into compiler
+2. edit code
+3. right click on program folder in 'Program Workspace' and commit the code
+4. right click on program folder in 'Program Workspace' and publish code
 
 ## How to Use: ##
 Need to run setpath before running any file
