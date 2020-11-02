@@ -29,7 +29,7 @@ Need to run setpath before running any file
 - [ ] MBED Side
 
  ## Authors ##
- Daniel Gonzalez Diaz  not
+ Daniel Gonzalez Diaz
  Laura Huang  
  Uriel Magana Salgado  
  Sebastian Uribe  
