@@ -27,6 +27,7 @@ Need to run setpath before running any file
 - [ ] Add spring to arm
 - [ ] Create optimzation code template
 - [ ] MBED Side
+- [ ] Getting inertias and motor constants
 
  ## Authors ##
  Daniel Gonzalez Diaz
