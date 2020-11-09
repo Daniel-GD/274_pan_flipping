@@ -19,6 +19,17 @@ function [cineq ceq] = constraints(x,z0,p)
 % However, fmincon() will only pass in x; z0 and p will have to be
 % provided using an anonymous function, just as we use anonymous
 % functions with ode45().
+
+    %constraints
+    
+    %Pan must flip
+    
+    %Pan must not fall from the pan
+    
+    %Torque limits
+    
+    %Joint limits
+    
     tf=x(1);
     ctrl.tf=x(2);
     ctrl.T=x(3:end);
