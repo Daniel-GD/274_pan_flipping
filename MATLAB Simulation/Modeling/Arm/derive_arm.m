@@ -8,7 +8,7 @@ q   = [th1; th2];      % generalized coordinates
 dq  = [dth1; dth2];    % first time derivatives
 ddq = [ddth1; ddth2];  % second time derivatives
 u   = [tau1; tau2];     % controls
-p   = [c1; c2; l1; l2; m1; m2; I1; I2; k; kappa; th1_0; th2_0; g];        % parameters
+p   = [c1; c2; l1; l2; m1; m2; I1; I2; k; kappa; g];        % parameters
 
 % Generate Vectors and Derivatives
 ihat = [1; 0; 0];
@@ -67,7 +67,7 @@ g = ddt(jacobian(L,dq).') - jacobian(L,q).' - Q;
 
 % Rearrange Equations of Motion
 A = jacobian(g,ddq);
-b = A*ddq - g;
+b = A*ddq - g
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];

@@ -71,8 +71,9 @@ end
 
 function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, fric_coeff)
     p_contact=zeros(1,4);
-    K_c=10; %10000;
+    K_c=100; %10000;
     D_c=20; %.8;
+    tau_k=1;
     %Get keypoints
     pan_position= get_pan_position(z_arm,p.arm);
     
@@ -130,12 +131,12 @@ function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, f
             end
         end
     end
-    FB=FcB*e2hat;
+    FB=FcB*e2hat;   
     tauB=cross([(rB-rC); 0],[FB; 0]);
    
     %Add Forces
     F=FA+FB;
-    tau=tauA(3)+tauB(3);
+    tau=tau_k*(tauA(3)+tauB(3));
 
     u_pk=[F(1); F(2); tau];
 end

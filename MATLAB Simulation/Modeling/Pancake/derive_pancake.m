@@ -10,7 +10,7 @@ dq  = [dx; dy; dth];    % first time derivatives
 ddq = [ddx; ddy; ddth];  % second time derivatives
 u   = [Fx; Fy; Tau];     % controls
 % p   = [c1; c2; l1; l2; m1; m2; I1; I2; k; kappa; th1_0; th2_0; g];        % parameters
-p=[l; m; I; x0; y0; th0; g];
+p=[l; m; I; g];
 
 % Generate Vectors and Derivatives
 ihat = [1; 0; 0];

@@ -27,7 +27,7 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     h_title = title('t=0.0s');
     
     axis equal
-    axis([-.3 .5 -.3 .3]);
+    axis([-.2 .2 -.2 .2]);
     skip_frame = 100;
     
     %Step through and update animation

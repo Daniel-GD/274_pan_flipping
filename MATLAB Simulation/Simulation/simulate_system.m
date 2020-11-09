@@ -28,13 +28,16 @@ u_pk=[0;0;0]; %Initialize u
 % z_out(:,1) = z0;
 for i=1:num_steps-1
     %Move arm
-    z_arm= step_arm(z_out_arm(:,i),p.arm, u, dt);
+    z_arm= step_arm(z_out_arm(:,i),p.arm, u(:,i), dt);
     %Move pancake Should we move pancake before applying force
     z_pk=step_pancake(z_out_pk(:,i),p.pk, u_pk, dt);
     
     %%%%% LAURA %%%%%
     %Check collision (CONTACT MODELING) Calculate Fx, Fy and Tau
+%     u_pk=[0;0;0];
+%     if sum(z_arm(1:2))<pi/2 +.01
     [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p);
+%     end
     %%%%% LAURA %%%%%
     
     %Apply new torque to pancake
