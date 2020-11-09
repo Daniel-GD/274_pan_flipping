@@ -3,7 +3,7 @@ directory = '../../AutoDerived/Pancake/';
 
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
 % syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 k kappa l0 th1_0 th2_0 g F tau1 tau2 real
-syms t x dx ddx y dy ddy th dth ddth x0 y0 th0 l m I g Fx Fy Tau real
+syms t x dx ddx y dy ddy th dth ddth x0 y0 th0 l m I g Fx Fy Tau t_param real
 % Group them
 q   = [x; y; th];      % generalized coordinates (theta is respect to horizontal
 dq  = [dx; dy; dth];    % first time derivatives
@@ -17,6 +17,7 @@ ihat = [1; 0; 0];
 jhat = [0; 1; 0];
 khat = cross(ihat,jhat);
 e1hat =  cos(th)*ihat +sin(th)*jhat; %Vector pointing in the direction of the flat pancake
+% e1norm = 
 
 ddt = @(r) jacobian(r,[q;dq])*[dq;ddq]; % a handy anonymous function for taking time derivatives
 
@@ -24,6 +25,8 @@ ddt = @(r) jacobian(r,[q;dq])*[dq;ddq]; % a handy anonymous function for taking 
 rc=[x; y; 0]; %Position of CoM
 rA=rc-l/2*e1hat; %1st end point of pancake
 rB=rc+l/2*e1hat; %2nd end point of pancake
+
+rt_param= rA+ l*t_param*e1hat;
 % rc1= p(1)*e1hat; %position vector to the CoM of link 1
 % rB = p(3)*e1hat; %position vector to point B
 % rc2= rB+p(2)*e2hat; %position vector to the CoM of link 2
@@ -33,6 +36,8 @@ rB=rc+l/2*e1hat; %2nd end point of pancake
 drc= ddt(rc); 
 drA = ddt(rA); %they are the same as rc
 drB = ddt(rB);
+
+drt_param=ddt(rt_param);
 % drc2= ddt(rc2);
 % drC = ddt(rC);
 
@@ -70,13 +75,27 @@ g = ddt(jacobian(L,dq).') - jacobian(L,q).' - Q;
 
 % Rearrange Equations of Motion
 A = jacobian(g,ddq);
-b = A*ddq - g
+b = A*ddq - g;
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
+
+JA = jacobian(rA,q);
+JB = jacobian(rB,q);
 matlabFunction(A,'file',[directory 'A_' name],'vars',{z p});
 matlabFunction(b,'file',[directory 'b_' name],'vars',{z u p});
 matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
 matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
 matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});
 matlabFunction(keypoints,'file',[directory 'keypoints_' name],'vars',{z p});
+matlabFunction(e1hat(1:2),'file',[directory 'pk_parallel'],'vars',{z p});
+% matlabFunction(e2normhat(1:2),'file',[directory 'pk_normal'],'vars',{z p});
+
+matlabFunction([rA(1:2) rB(1:2)],'file',[directory 'get_pancake_position' ],'vars',{z p});
+matlabFunction([drA(1:2) drB(1:2)],'file',[directory 'get_pancake_velocity' ],'vars',{z p});
+matlabFunction(drc(1:2),'file',[directory 'get_pancake_com_velocity' ],'vars',{z p});
+matlabFunction(rt_param(1:2),'file',[directory 'pk_position_interpolation'],'vars',{z p t_param});
+matlabFunction(drt_param(1:2),'file',[directory 'pk_velocity_interpolation'],'vars',{z p t_param});
+
+matlabFunction(JA,'file',[directory 'jacobian_pk_A'],'vars',{z p});
+matlabFunction(JB,'file',[directory 'jacobian_pk_B'],'vars',{z p});

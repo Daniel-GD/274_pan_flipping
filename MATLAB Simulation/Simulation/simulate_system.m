@@ -1,4 +1,4 @@
-function [arm, pk, contact_pts, tspan]=simulate_contact(z0, p, u, tf, dt)
+function [arm, pk, contact_pts, tspan]=simulate_system(z0, p, u, tf, dt)
 % [tout, zout, uout, indices] = hybrid_simulation(z0,ctrl,p,tspan)
 % Hybrid simulation of the entire system Arm + Pancake for a series of
 % inputs
@@ -17,7 +17,7 @@ tspan = linspace(0, tf, num_steps);
 %Initialize variables
 z_out_arm = zeros(numel(z0.arm),num_steps);
 z_out_pk = zeros(numel(z0.pk),num_steps);
-contact_pts=zeros(2,num_steps);
+contact_pts=zeros(4,num_steps);
 
 z_out_arm(:,1) = z0.arm;
 z_out_pk(:,1) = z0.pk;
@@ -34,14 +34,12 @@ for i=1:num_steps-1
     
     %%%%% LAURA %%%%%
     %Check collision (CONTACT MODELING) Calculate Fx, Fy and Tau
-    [u_pk p_contact]=simulate_contact(z_arm,z_pk, p);
+    [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p);
     %%%%% LAURA %%%%%
     
     %Apply new torque to pancake
     z_pk=step_pancake(z_out_pk(:,i),p.pk, u_pk, dt);
-    
-    
-    
+
     
     %Add final states to arrays
     z_out_arm(:,i+1) = z_arm;

@@ -1,7 +1,7 @@
 name = 'arm';
 
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
-syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 k kappa l0 th1_0 th2_0 g F tau1 tau2 real
+syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
 
 % Group them
 q   = [th1; th2];      % generalized coordinates
@@ -16,6 +16,7 @@ jhat = [0; 1; 0];
 khat = cross(ihat,jhat);
 e1hat =  sin(th1)*ihat -cos(th1)*jhat; %Vector pointing in the direction of link1
 e2hat =  sin(th1+th2)*ihat-cos(th1+th2)*jhat; %VVector pointing in the direction of link2
+e2normhat = cos(th1+th2)*ihat+sin(th1+th2)*jhat;
 
 ddt = @(r) jacobian(r,[q;dq])*[dq;ddq]; % a handy anonymous function for taking time derivatives
 
@@ -25,11 +26,15 @@ rB = p(3)*e1hat; %position vector to point B
 rc2= rB+p(2)*e2hat; %position vector to the CoM of link 2
 rC = rB+p(4)*e2hat; %position vector to point C (end effector)
 
+rt_param= rB+t_param*p(4)*e2hat;
+
 %time derivatives of position vectors
 drc1= ddt(rc1); 
 drB = ddt(rB);
 drc2= ddt(rc2);
 drC = ddt(rC);
+
+drt_param = ddt(rt_param);
 
 % Calculate Kinetic Energy, Potential Energy, and Generalized Forces
 F2Q = @(F,r) simplify(jacobian(r,q)'*(F));    % force contributions to generalized forces
@@ -73,3 +78,10 @@ matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
 matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
 matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});
 matlabFunction(keypoints,'file',[directory 'keypoints_' name],'vars',{z p});
+matlabFunction([rB(1:2) rC(1:2) rc2(1:2)],'file',[directory 'get_pan_position'],'vars',{z p});
+matlabFunction(e2hat(1:2),'file',[directory 'pan_parallel'],'vars',{z p});
+matlabFunction(e2normhat(1:2),'file',[directory 'pan_normal'],'vars',{z p});
+matlabFunction(rt_param(1:2),'file',[directory 'pan_position_interpolation'],'vars',{z p t_param});
+matlabFunction(drt_param(1:2),'file',[directory 'pan_velocity_interpolation'],'vars',{z p t_param});
+% matlabFunction(rt_param,'file',[directory 'pan_position_interpolation','vars',{z p t_param});
+% matlabFunction(drt_param,'file',[directory 'pan_velocity_interpolation','vars',{z p t_param});

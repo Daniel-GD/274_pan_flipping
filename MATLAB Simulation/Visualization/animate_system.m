@@ -20,14 +20,15 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     h_pk_com =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','black');
     
     % Prepare contact plot handles
-    h_contact =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
+    h_contact1 =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
+    h_contact2 =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
     xlabel('x')
     ylabel('y');
     h_title = title('t=0.0s');
     
     axis equal
     axis([-.3 .3 -.3 .3]);
-    skip_frame = 50;
+    skip_frame = 100;
     
     %Step through and update animation
     for i=1:numel(tspan)
@@ -71,8 +72,11 @@ function animate_system(arm, pk, contact_pts, p, tspan)
         set(h_c2_mark,'YData',[rc2(2)]);
         
         %Plot contact point (NaN doesnt plot anything)
-        set(h_contact,'XData',[contact_pts(1,i)]);
-        set(h_contact,'YData',[contact_pts(2,i)]);
+        set(h_contact1,'XData',[contact_pts(1,i)]);
+        set(h_contact1,'YData',[contact_pts(2,i)]);
+        
+        set(h_contact2,'XData',[contact_pts(3,i)]);
+        set(h_contact2,'YData',[contact_pts(4,i)]);
         
         
         %Set pancakes
@@ -81,7 +85,7 @@ function animate_system(arm, pk, contact_pts, p, tspan)
         
         set(h_pk_com,'XData',[rc_pk(1)]);
         set(h_pk_com,'YData',[rc_pk(2)]);
-        
+%         break
         pause(.01)
     end
 end
