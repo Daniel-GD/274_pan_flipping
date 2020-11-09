@@ -30,7 +30,7 @@ Need to run setpath before running any file
 - [ ] Getting inertias and motor constants
 
  ## Authors ##
- Daniel Gonzalez Diaz
+ Daniel Gonzalez Diaz  
  Laura Huang  
  Uriel Magana Salgado  
  Sebastian Uribe  
