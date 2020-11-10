@@ -12,29 +12,7 @@ function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
 Fx=0;
 Fy=0;
 Tau=0;
-% p_intersect= find_intersection(z_arm,z_pk, p);
-% if numel(p_intersect) ==0
-%     %no contact
-%     Fx=0;
-%     Fy=0;
-%     Tau=0;
-%     p_contact=[NaN NaN];
-%     [Fx, Fy, Tau] = discrete_impact_contact_center(z_arm,z_pk,p,p_contact, 1000, 20);
-% elseif numel(p_intersect(1,:)) ==1
-%    % Intersection
-%    p_contact=p_intersect;
-%    [Fx, Fy, Tau] = discrete_impact_contact_int(z_arm,z_pk,p,p_contact, 1000, 20);
-%    
-%    
-% elseif numel(p_intersect(1,:))==2
-%     % Colinear
-%     p_contact=mean(p_intersect);
-% %     [Fx, Fy, Tau] = discrete_impact_contact(z_arm,z_pk,p,p_contact, 1000, 20);
-%     %It shouldnt apply a torque right?
-% end
 [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, 1000, 20);
-% p_contact=[0;0];
-% u_pk=[Fx; Fy; Tau];
 end
 
 function [p_intersection]= find_intersection(z_arm,z_pk, p)
@@ -70,7 +48,7 @@ function t=get_t(x,x0,xf)  %Inverse linear interpolation
 end
 
 function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, fric_coeff)
-    p_contact=zeros(1,4);
+    p_contact=NaN(1,4);
     K_c=100; %10000;
     D_c=20; %.8;
     tau_k=1;
@@ -142,7 +120,7 @@ function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, f
 end
 
 function [u_pk, p_contact] = discrete_impact_contact_dynamics(z_arm,z_pk,p, rest_coeff, fric_coeff)
-    p_contact=zeros(1,4);
+    p_contact=NaN(1,4);
     K_c=10000;
     D_c=.8;
     %Get keypoints

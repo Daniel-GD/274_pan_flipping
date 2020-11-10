@@ -26,14 +26,9 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 %% Define Simulation Parameters
 tf=.5;
 dt=.00001;
-num_steps = floor(tf/dt);
-timestop=round(1*num_steps/3);
-u=zeros(2,num_steps);
-u(1,1:timestop)=1;
-u(2,1:timestop)=1;
-u(1,timestop+1: end)=-5;
-u(2,timestop+1: end)=-5;
+ub=[.5 .5 -1];
+ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5;
 
 %% Run and animate simulation
-[arm, pk, contact_pts, tspan]=simulate_system(z0, p, u, tf, dt);
+[arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);
 animate_system(arm, pk, contact_pts, p, tspan);
