@@ -49,10 +49,10 @@ Vg2 = p(8)*g*dot(rc2, jhat);
 Vg3 = p(9)*g*dot(rc3, jhat);
 Ve1 = 0; %1/2*k*(sqrt(simplify(dot(rC,rC)))-l0)^2;
 Ve2 = 0; %1/2*kappa*(th - th0)^2;
-Ve3 = 0; %1/2*kappa*(th - th0)^2;
+Ve3 = 1/2*kappa*(th3 - th3_0)^2; %1/2*kappa*(th - th0)^2;
 
 T = T1+T2+T3;%simplify(T1 + T2 + T3)
-V = Vg1 + Vg2 + Vg3; % + Ve1 + Ve2 + Ve3;
+V = Vg1 + Vg2 + Vg3 + Ve3; % + Ve1 + Ve2 + Ve3;
 Q_tau1 = M2Q(tau1*khat,dth1*khat);
 Q_tau2 = M2Q(tau2*khat,dth2*khat);
 Q_tau3 = M2Q(tau3*khat,dth3*khat);
