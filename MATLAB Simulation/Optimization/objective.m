@@ -16,21 +16,22 @@ function f = objective(x,z0,p)
 % However, fmincon() will only pass in x; z0 and p will have to be
 % provided using an anonymous function, just as we use anonymous
 % functions with ode45().
-
-%(m2*(y + c2*sin(th) + l*sin(th)) + m1*(y + c1*sin(th)) + mh*(y + 2*l*sin(th)))/(m1 + m2 + mh)
-    tf=x(1);
-    ctrl.tf=x(2);
-    ctrl.T=x(3:end);
-    tspan= [0 tf];
-    [tout, zout, uout, indices]=hybrid_simulation(z0,ctrl,p,tspan);
     
+    f = 0;
+%(m2*(y + c2*sin(th) + l*sin(th)) + m1*(y + c1*sin(th)) + mh*(y + 2*l*sin(th)))/(m1 + m2 + mh)
+%     tf=x(1);
+%     ctrl.tf=x(2);
+%     ctrl.T=x(3:end);
+%     tspan= [0 tf];
+%     [tout, zout, uout, indices]=hybrid_simulation(z0,ctrl,p,tspan);
+%     
     
 %     COMs=COM_jumping_leg(zout,p);
 %     f= -max(COMs(2,:));
 %                                          %negative of COM height
     
     % alternate objective functions:
-    f = tf;                                         % final time
+%     f = tf;                                         % final time
 %     f = sum(uout.^2);                                         % minimize T^2 integral
     
 end

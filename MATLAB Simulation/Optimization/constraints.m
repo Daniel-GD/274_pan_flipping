@@ -20,40 +20,65 @@ function [cineq ceq] = constraints(x,z0,p)
 % provided using an anonymous function, just as we use anonymous
 % functions with ode45().
 
-    %constraints
+    % constraints
+    % x = [tf, dt, ctrl.tf, ctrl.T]; i added a dt to the x struc
+    %run simulation
+    tf = x(1);
+    dt = x(2);
+    
+    % z0 is a struct with arm & pk
+    [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
+    z_out_arm = arm.z_out;
+    z_out_pk = pk.z_out;
     
     %Pan must flip
+    % final angle must be 180 deg
+    
+    ceq = [z_out_pk(3:end)-pi];
+    
     
     %Pan must not fall from the pan
+    %Rightmost point of pancake < rightmost point of pan
+    % get pan rightmost position
+    arm_kpts = keypoints_arm(z0.arm,p.arm);
+    pk_kpts = keypoints_pancake(z0.pk,p.pk);
     
+    % comparing x points
+    cineq1 = arm_kpts(1,:)-pk_kpts(1,:);
+    
+    % we dont want the arm to overextend
+    cineq2 = max(arm.z_out(1,:))-pi/2; % don't overextend first arm, th1
+    cineq3 = max(arm.z_out(2,:))-pi/2; % don't overextend second arm, th2
+    
+    cineq = [cineq1, cineq2, cineq3];
     %Torque limits
     
     %Joint limits
     
-    tf=x(1);
-    ctrl.tf=x(2);
-    ctrl.T=x(3:end);
-    tspan= [0 tf];
-    [tout, zout,~, indices]=hybrid_simulation(z0,ctrl,p,tspan);
+%     tf=x(1);
+%     ctrl.tf=x(2);
+%     ctrl.T=x(3:end);
+%     tspan= [0 tf];
+%     [tout, zout,~, indices]=hybrid_simulation(z0,ctrl,p,tspan);
     
-    COMs=COM_jumping_leg(zout,p);
-    f= max(COMs(2,:));
-    apex_c= .4-f;
+%     COMs=COM_jumping_leg(zout,p);
+%     f= max(COMs(2,:));
+%     apex_c= .4-f;
+%     
+%     cineq1=-min(zout(2,:));
+%     cineq2 =max(zout(2,:))-pi/2;
     
-    cineq1=-min(zout(2,:));
-    cineq2 =max(zout(2,:))-pi/2;
-    
-    cineq = [cineq1 , cineq2]; 
+%     cineq = [cineq1 , cineq2]; 
 %     cineq = [cineq1 , cineq2, apex_c];  
 
 %     if indices(1)==0 %Check if you actually took off
 %         indices(1)=1;
 %     end
-    takeoff_ceq=ctrl.tf-tout(indices(1));
-         ceq = [ takeoff_ceq];  
-    
-    ceq = [ takeoff_ceq apex_c]; 
-    
+%     takeoff_ceq=ctrl.tf-tout(indices(1));
+%          ceq = [ takeoff_ceq];  
+%     
+%     ceq = [ takeoff_ceq apex_c]; 
+%     
                                                             
 % simply comment out any alternate constraints when not in use
     

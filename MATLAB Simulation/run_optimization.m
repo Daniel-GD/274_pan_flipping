@@ -18,11 +18,12 @@ z0 = [0; pi/6; 0 ;0];                    % set initial state
 % set guess
 % tf = .5;                                        % simulation final time
 tf = 0;                                        % guess for time minimization
+dt = 0.0001;
 ctrl.tf = 0.35;                                  % control time points
 ctrl.T = [1.0 1.0 1.0];                               % control values
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 
-x = [tf, ctrl.tf, ctrl.T];
+x = [tf, dt, ctrl.tf, ctrl.T];
 % % setup and solve nonlinear programming problem
 problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
 problem.nonlcon = @(x) constraints(x,z0,p);     % create anonymous function that returns nonlinear constraints

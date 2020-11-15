@@ -1,4 +1,4 @@
-function [arm, pk, contact_pts, tout]=simulate_system(z0, p, ctrl, tf, dt)
+function [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt)
 % [tout, zout, uout, indices] = hybrid_simulation(z0,ctrl,p,tspan)
 % Hybrid simulation of the entire system Arm + Pancake for a series of
 % inputs
@@ -18,6 +18,7 @@ tout = linspace(0, tf, num_steps);
 z_out_arm = zeros(numel(z0.arm),num_steps);
 z_out_pk = zeros(numel(z0.pk),num_steps);
 contact_pts=zeros(4,num_steps);
+uout = zeros(5, num_steps);
 
 z_out_arm(:,1) = z0.arm;
 z_out_pk(:,1) = z0.pk;
@@ -66,7 +67,7 @@ for i=1:num_steps-1
     z_out_arm(:,i+1) = z_arm;
     z_out_pk(:,i+1) = z_pk;
     contact_pts(:,i+1) = p_contact;
-    
+    uout(:,i+1) = [u; u_pk];
     last_contact=contact;
 end
 state
