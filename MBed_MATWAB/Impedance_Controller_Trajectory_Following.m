@@ -12,7 +12,7 @@ pts_foot = repmat(const_point,1,8);
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
        
-% pts_foot = [pts]; % YOUR BEZIER PTS HERE
+pts_foot = [pts]; % YOUR BEZIER PTS HERE
 
 % Initial leg angles for encoder resets (negative of q1,q2 in lab handout due to direction motors are mounted)
 angle1_init = 0;

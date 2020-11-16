@@ -21,10 +21,12 @@ function [cineq ceq] = constraints(x,z0,p,dt)
 % functions with ode45().
 
     % constraints
-    % x = [tf, dt, ctrl.tf, ctrl.T]; i added a dt to the x struc
+    % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
     tf = x(1);
-    dt = x(2);
+    ctrl.tf = tf;
+    ctrl.T1 = x(3:6);
+    ctrl.T2 = x(6:end);
     
     % z0 is a struct with arm & pk
     [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
@@ -44,8 +46,15 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     arm_kpts = keypoints_arm(z0.arm,p.arm);
     pk_kpts = keypoints_pancake(z0.pk,p.pk);
     
+    size(arm_kpts)
+    size(pk_kpts)
+    arm_kpts
+    pk_kpts
+    size(arm.z_out)
+    size(pk.z_out)
+    
     % comparing x points
-    cineq1 = arm_kpts(1,:)-pk_kpts(1,:);
+    cineq1 = arm_kpts(1,end)-pk_kpts(1,end);
     
     % we dont want the arm to overextend
     cineq2 = max(arm.z_out(1,:))-pi/2; % don't overextend first arm, th1

@@ -65,10 +65,10 @@ obj= objective(x,z0,p)
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
 tf=x(1);
-dt=x(2);
-ctrl.tf=x(3);
-ctrl.T1=x(4:7);
-ctrl.T2=x(7:end);
+ctrl.tf=x(2);
+ctrl.T1=x(3:6);
+ctrl.T2=x(6:end);
+ctrl
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
 [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
