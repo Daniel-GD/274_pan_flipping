@@ -17,6 +17,10 @@ addpath([pwd '/Simulation'])
 addpath([pwd '/Simulation/Arm'])
 addpath([pwd '/Simulation/Pancake'])
 addpath([pwd '/Simulation/Utils'])
+<<<<<<< HEAD
+=======
+
+>>>>>>> c6525eb9244bf0ee2003b3f3d773101192aebe08
 addpath([pwd '/Optimization'])
 addpath([pwd '/Visualization'])
 addpath([pwd '/Misc'])
