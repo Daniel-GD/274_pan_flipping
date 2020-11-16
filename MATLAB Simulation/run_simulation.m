@@ -26,8 +26,9 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 %% Define Simulation Parameters
 tf=.5;
 dt=.00001;
-ub=[.5 .5 -1];
-ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5;
+ub=[.25 .5 .5 -1];
+ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5
+
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);

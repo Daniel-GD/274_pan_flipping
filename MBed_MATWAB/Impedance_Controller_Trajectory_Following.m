@@ -9,6 +9,12 @@ const_point = [0.1;-.1]; %[x;y] or [q1,q2] constant coordinate (x,q1,q2 coordina
 const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
+
+ub=[.5 .5 .5 -1];
+ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5;
+
+torque_pts= [ctrl.T1;ctrl.T2];
+
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
        
@@ -16,7 +22,7 @@ pts_foot = [pts]; % YOUR BEZIER PTS HERE
 
 % Initial leg angles for encoder resets (negative of q1,q2 in lab handout due to direction motors are mounted)
 angle1_init = 0;
-angle2_init = 0;
+angle2_init = pi/2;
 
 % Total experiment time is buffer,trajectory,buffer
 traj_time         = 2;
@@ -38,7 +44,7 @@ gains.D_xy = 0;
 duty_max   = .1;
 
 %% Run Experiment
-[output_data] = Experiment_trajectory( angle1_init, angle2_init, pts_foot,...
+[output_data] = Experiment_trajectory( angle1_init, angle2_init, torque_pts,...
                                        traj_time, pre_buffer_time, post_buffer_time,...
                                        gains, duty_max);
 
@@ -47,24 +53,35 @@ t = output_data(:,1);
 x = -output_data(:,12); % actual foot position in X (negative due to direction motors are mounted)
 y = output_data(:,13); % actual foot position in Y
    
-xdes = output_data(:,16); % desired foot position in X (negative due to direction motors are mounted)
-ydes = output_data(:,17); % desired foot position in Y
+% xdes = output_data(:,16); % desired foot position in X (negative due to direction motors are mounted)
+% ydes = output_data(:,17); % desired foot position in Y
+tau1 = output_data(:,16);      % desired foot position (negative due to direction motors are mounted)
+tau2 = output_data(:,17);      % desired foot position        
+tau1_des = output_data(:,18);      % desired foot position (negative due to direction motors are mounted)
+tau2_des = output_data(:,19);      % desired foot position   
 
 final_pos=[x(end) y(end)]
 
 %% Plot foot vs desired
 figure(3); clf;
+% subplot(211); hold on
+% plot(t,xdes,'r-'); plot(t,x);
+% xlabel('Time (s)'); ylabel('X (m)'); legend({'Desired','Actual'});
+% 
+% subplot(212); hold on
+% plot(t,ydes,'r-'); plot(t,y);
+% xlabel('Time (s)'); ylabel('Y (m)'); legend({'Desired','Actual'});
 subplot(211); hold on
-plot(t,xdes,'r-'); plot(t,x);
-xlabel('Time (s)'); ylabel('X (m)'); legend({'Desired','Actual'});
+plot(t,tau1_des,'r-'); plot(t,tau1);
+xlabel('Time (s)'); ylabel('TAU1'); legend({'Desired','Actual'});
 
 subplot(212); hold on
-plot(t,ydes,'r-'); plot(t,y);
-xlabel('Time (s)'); ylabel('Y (m)'); legend({'Desired','Actual'});
+plot(t,tau2_des,'r-'); plot(t,tau2);
+xlabel('Time (s)'); ylabel('TAU2'); legend({'Desired','Actual'});
 
-figure(4); clf; hold on
-plot(xdes,ydes,'r-'); plot(x,y,'k');
-xlabel('X (m)'); ylabel('Y (m)'); legend({'Desired','Actual'});
+% figure(4); clf; hold on
+% plot(xdes,ydes,'r-'); plot(x,y,'k');
+% xlabel('X (m)'); ylabel('Y (m)'); legend({'Desired','Actual'});
 
 % for Cartesian constant points, un-comment this to see the virtual potential well on figure 4
 % [X, Y] = meshgrid(linspace(-0.25,0.25,50),linspace(-0.25,0.1,50));

@@ -1,4 +1,4 @@
-function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot, traj_time, pre_buffer_time, post_buffer_time, gains, duty_max)
+function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_pts, traj_time, pre_buffer_time, post_buffer_time, gains, duty_max)
     
     % Figure for plotting motor data
     figure(1);  clf;       
@@ -94,8 +94,10 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
         
         x = -new_data(:,12);         % actual foot position (negative due to direction motors are mounted)
         y = new_data(:,13);         % actual foot position
-        xdes = -new_data(:,16);      % desired foot position (negative due to direction motors are mounted)
-        ydes = new_data(:,17);      % desired foot position         
+        tau1 = new_data(:,16);      % desired foot position (negative due to direction motors are mounted)
+        tau2 = new_data(:,17);      % desired foot position        
+        tau1_des = new_data(:,18);      % desired foot position (negative due to direction motors are mounted)
+        tau2_des = new_data(:,19);      % desired foot position         
         
         N = length(pos1);
         
@@ -141,8 +143,8 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
         
         h_foot.XData(end+1:end+N) = x;
         h_foot.YData(end+1:end+N) = y;
-        h_des.XData(end+1:end+N) = xdes;
-        h_des.YData(end+1:end+N) = ydes;
+        h_des.XData(end+1:end+N) = tau1_des;
+        h_des.YData(end+1:end+N) = tau2_des;
         
     end
     
@@ -169,13 +171,12 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
     input = [input K_xx K_yy K_xy D_xx D_yy D_xy];
     input = [input duty_max];
     input = [input p.arm(3) p.arm(4)]; %Add arm parameters
-    input = [input pts_foot(:)']; % final size of input should be 28x1
+    input = [input torque_pts(:)']; % final size of input should be 28x1
     
     params.timeout  = (start_period+traj_time+end_period);  
     
     output_size = 19;    % number of outputs expected
     output_data = RunExperiment(frdm_ip,frdm_port,input,output_size,params);
-    x_des_out= output_data(16)
     linkaxes([a1 a2 a3 a4],'x')
     
 end
