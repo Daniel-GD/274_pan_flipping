@@ -4,8 +4,8 @@ setpath
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = pi/4; %+.1;
-th2_0 = pi/6;%-pi/6;
+th1_0 = 0; %+.1;
+th2_0 = pi/2;%-pi/6;
 dth1_0=0; %pi/2;
 dth2_0=0 ;%2*pi;%2*pi;
 
@@ -14,7 +14,7 @@ z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
-x0=pan_position(1,3); %place the pancake at the center of mass
+x0=pan_position(1,3)+0.03; %place the pancake at the center of mass
 y0=pan_position(2,3);
 th0=pi/2+th1_0+th2_0;
 dx0=0; dy0=0; dth0=0;
@@ -26,8 +26,12 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 %% Define Simulation Parameters
 tf=.5;
 dt=.00001;
-ub=[.25 .5 .5 -1];
-ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5
+ub=[.5 .2 -1 -1];
+T1=[.5 .2 -1 -1];
+T2=[.5 .4 -1 -1];
+T1=[.5 .5 -.5 -.5];
+T2=[-.1 .73 .5 -1];
+ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 
 %% Run and animate simulation

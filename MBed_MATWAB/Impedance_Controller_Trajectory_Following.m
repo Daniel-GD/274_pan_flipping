@@ -10,23 +10,24 @@ const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
 
-ub=[.5 .5 .5 -1];
-ctrl.T1=ub; ctrl.T2=ub; ctrl.tf=tf/5;
+T1=[.5 .5 -.5 -.5];
+T2=[-.1 .73 .5 -1];
+ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=.25;
 
 torque_pts= [ctrl.T1;ctrl.T2];
 
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
        
-pts_foot = [pts]; % YOUR BEZIER PTS HERE
+% pts_foot = [pts]; % YOUR BEZIER PTS HERE
 
 % Initial leg angles for encoder resets (negative of q1,q2 in lab handout due to direction motors are mounted)
 angle1_init = 0;
 angle2_init = pi/2;
 
 % Total experiment time is buffer,trajectory,buffer
-traj_time         = 2;
-pre_buffer_time   = 0; % this should be 0 for constant points, 2 for Bezier trajectories
+traj_time         = ctrl.tf;
+pre_buffer_time   = 2; % this should be 0 for constant points, 2 for Bezier trajectories
 post_buffer_time  = 5;
 
 % Gains for impedance controller
