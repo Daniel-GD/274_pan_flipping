@@ -8,9 +8,30 @@ clear all; close all; clc;
 % For more information about the Matlab path, see
 % http://www.mathworks.com/help/matlab/matlab_env/what-is-the-matlab-search-path.html
 setpath                                     % add AutoDerived, Modeling, and Visualization folders to Matlab path
+%% Set parameters
+p=parameters();
 
-p = parameters();                           % get parameters from file
-z0 = [0; pi/6; 0 ;0];                    % set initial state
+% Arm Initial Conditions
+th1_0 = pi/4; %+.1;
+th2_0 = pi/6;%-pi/6;
+dth1_0=0; %pi/2;
+dth2_0=0 ;%2*pi;%2*pi;
+
+z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
+
+% Pancake Initial Conditions
+%Start the pancake at the end of the arm
+pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
+x0=pan_position(1,3); %place the pancake at the center of mass
+y0=pan_position(2,3);
+th0=pi/2+th1_0+th2_0;
+dx0=0; dy0=0; dth0=0;
+
+z0_pk=[x0; y0; th0; dx0; dy0; dth0];
+
+z0= struct('arm',z0_arm,'pk',z0_pk);
+
+%% Optimization
 % Note: 5th state is the integral of torque squared over time
 % An equation has been added to dynamics_continuous and dynamics_discrete
 % to integrate this new state.
@@ -18,18 +39,21 @@ z0 = [0; pi/6; 0 ;0];                    % set initial state
 % set guess
 % tf = .5;                                        % simulation final time
 tf = 0;                                        % guess for time minimization
-dt = 0.0001;
+dt = 0.0001;                                    % time step
 ctrl.tf = 0.35;                                  % control time points
-ctrl.T = [1.0 1.0 1.0];                               % control values
+ctrl.T1 = [.5 .5 -1];                             % control values
+ctrl.T2 = [.5 .5 -1];
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 
-x = [tf, dt, ctrl.tf, ctrl.T];
+x = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
 % % setup and solve nonlinear programming problem
 problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
-problem.nonlcon = @(x) constraints(x,z0,p);     % create anonymous function that returns nonlinear constraints
-problem.x0 = [tf ctrl.tf ctrl.T];                   % initial guess for decision variables
-problem.lb = [.1 .1 -2*ones(size(ctrl.T))];     % lower bound on decision variables
-problem.ub = [1  1   2*ones(size(ctrl.T))];     % upper bound on decision variables
+problem.nonlcon = @(x) constraints(x,z0,p,dt);     % create anonymous function that returns nonlinear constraints
+problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
+
+% does this change? I added a ctrl.T2 which controls the second motor
+problem.lb = [.1 .1 -3*ones(size(ctrl.T1)) -3*ones(size(ctrl.T2))];     % lower bound on decision variables
+problem.ub = [1  1   3*ones(size(ctrl.T1))  3*ones(size(ctrl.T2))];     % upper bound on decision variables
 problem.Aineq = []; problem.bineq = [];         % no linear inequality constraints
 problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
@@ -41,42 +65,51 @@ obj= objective(x,z0,p)
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
 tf=x(1);
-ctrl.tf=x(2);
-ctrl.T=x(3:end);
+dt=x(2);
+ctrl.tf=x(3);
+ctrl.T1=x(4:7);
+ctrl.T2=x(7:end);
 
-[t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
+% [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
+[arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
 
-Torque_squared=sum(u.^2);
-COM_height=COM_jumping_leg(z(:,end),p);
+% Torque_squared=sum(u.^2);
+% COM_height=COM_jumping_leg(z(:,end),p);
+
+%% Animate
+animate_system(arm, pk, contact_pts, p, tout);
+
+
+
 %% Plot COM for your submissions
-figure(1)
-COM = COM_jumping_leg(z,p);
-size(COM);
-plot(t,COM(2,:))
-xlabel('time (s)')
-ylabel('CoM Height (m)')
-title('Center of Mass Trajectory')
-
-figure(2)  % control input profile
-ctrl_t = linspace(0, ctrl.tf, 50);
-ctrl_pt_t = linspace(0, ctrl.tf, length(ctrl.T));
-n = length(ctrl_t);
-ctrl_input = zeros(1,n);
-
-for i=1:n
-    ctrl_input(i) = BezierCurve(x(3:end),ctrl_t(i)/ctrl.tf);
-end
-
-hold on
-plot(ctrl_t, ctrl_input);
-plot(ctrl_pt_t, x(3:end), 'o');
-hold off
-xlabel('time (s)')
-ylabel('torque (Nm)')
-title('Control Input Trajectory')
-%%
-% Run the animation
-figure(3)                          % get the coordinates of the points to animate
-speed = .25;                                 % set animation speed
-clf                                         % clear fig
-animate_simple(t,z,p,speed)                 % run animation
+% figure(1)
+% COM = COM_jumping_leg(z,p);
+% size(COM);
+% plot(t,COM(2,:))
+% xlabel('time (s)')
+% ylabel('CoM Height (m)')
+% title('Center of Mass Trajectory')
+% 
+% figure(2)  % control input profile
+% ctrl_t = linspace(0, ctrl.tf, 50);
+% ctrl_pt_t = linspace(0, ctrl.tf, length(ctrl.T));
+% n = length(ctrl_t);
+% ctrl_input = zeros(1,n);
+% 
+% for i=1:n
+%     ctrl_input(i) = BezierCurve(x(3:end),ctrl_t(i)/ctrl.tf);
+% end
+% 
+% hold on
+% plot(ctrl_t, ctrl_input);
+% plot(ctrl_pt_t, x(3:end), 'o');
+% hold off
+% xlabel('time (s)')
+% ylabel('torque (Nm)')
+% title('Control Input Trajectory')
+% %%
+% % Run the animation
+% figure(3)                          % get the coordinates of the points to animate
+% speed = .25;                                 % set animation speed
+% clf                                         % clear fig
+% animate_simple(t,z,p,speed)                 % run animation

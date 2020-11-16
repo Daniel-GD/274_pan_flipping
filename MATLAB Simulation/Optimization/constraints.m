@@ -1,4 +1,4 @@
-function [cineq ceq] = constraints(x,z0,p)
+function [cineq ceq] = constraints(x,z0,p,dt)
 % Inputs:
 % x - an array of decision variables.
 % z0 - the initial state
@@ -32,7 +32,8 @@ function [cineq ceq] = constraints(x,z0,p)
     z_out_pk = pk.z_out;
     
     %Pan must flip
-    % final angle must be 180 deg
+    % final angle must be 180 deg -- we could also change this to any
+    % multiple of 180?
     
     ceq = [z_out_pk(3:end)-pi];
     
