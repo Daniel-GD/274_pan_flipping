@@ -1,14 +1,14 @@
 name = 'arm';
 
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
-syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
+syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 Ir1 Ir2 N1 N2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
 
 % Group them
 q   = [th1; th2];      % generalized coordinates
 dq  = [dth1; dth2];    % first time derivatives
 ddq = [ddth1; ddth2];  % second time derivatives
 u   = [tau1; tau2];     % controls
-p   = [c1; c2; l1; l2; m1; m2; I1; I2; k; kappa; g];        % parameters
+p   = [c1; c2; l1; l2; m1; m2; I1; I2; Ir1; Ir2; N1; N2; k; kappa; g];        % parameters
 
 % Generate Vectors and Derivatives
 ihat = [1; 0; 0];
@@ -42,13 +42,16 @@ M2Q = @(M,w) simplify(jacobian(w,dq)'*(M));   % moment contributions to generali
 
 T1 = (1/2)*p(5)*dot(drc1, drc1) + (1/2)* p(7) * dth1^2;
 T2 = (1/2)*p(6)*dot(drc2, drc2) + (1/2)* p(8) * dth2^2;
+% Include Rotor inertias
+T1r = (1/2)*Ir1*(N1*dth1)^2;
+T2r = (1/2)*Ir2*(dth1 + N2*dth2)^2;
 
 Vg1 = p(5)*g*dot(rc1,jhat);
 Vg2 = p(6)*g*dot(rc2, jhat);
 Ve1 = 0; %1/2*k*(sqrt(simplify(dot(rC,rC)))-l0)^2;
 Ve2 = 0; %1/2*kappa*(th - th0)^2;
 
-T = T1+T2;%simplify(T1 + T2)
+T = T1+T2 + T1r +T2r;%simplify(T1 + T2)
 V = Vg1 + Vg2; % + Ve1 + Ve2;
 Q_tau1 = M2Q(tau1*khat,dth1*khat);
 Q_tau2 = M2Q(tau2*khat,dth2*khat);
@@ -67,7 +70,9 @@ g = ddt(jacobian(L,dq).') - jacobian(L,q).' - Q;
 
 % Rearrange Equations of Motion
 A = jacobian(g,ddq);
-b = A*ddq - g
+b = A*ddq - g;
+
+J=jacobian(rC,q);
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
