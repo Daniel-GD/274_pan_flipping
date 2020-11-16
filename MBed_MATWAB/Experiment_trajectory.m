@@ -60,6 +60,7 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
     axis equal
     axis([-.25 .25 -.25 .1]);
    
+    yline(0)
     h_AB = plot([0],[0],'LineWidth',2);
     h_BC = plot([0],[0],'LineWidth',2);
     h_c1 = plot([0],[0],'ro','MarkerSize',6);
@@ -97,7 +98,7 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
         dcur2 = new_data(:,10);     % desired current
         duty2 = new_data(:,11);     % command
         
-        x = new_data(:,12);         % actual foot position (negative due to direction motors are mounted)
+        x = -new_data(:,12);         % actual foot position (negative due to direction motors are mounted)
         y = new_data(:,13);         % actual foot position
         xdes = -new_data(:,16);      % desired foot position (negative due to direction motors are mounted)
         ydes = new_data(:,17);      % desired foot position         
@@ -138,7 +139,7 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
         rB = keypoints(:,2);
         rc2 = keypoints(:,3);
         rC = keypoints(:,4);
-
+        
         set(h_AB,'XData',[0 rB(1)],'YData',[0 rB(2)]);
         set(h_BC,'XData',[rB(1) rC(1)],'YData',[rB(2) rC(2)]);
         set(h_c1,'XData',[rc1(1)],'YData',[rc1(2)]);
@@ -173,12 +174,14 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
     input = [input angle1_init angle2_init];
     input = [input K_xx K_yy K_xy D_xx D_yy D_xy];
     input = [input duty_max];
+    input = [input p.arm(3) p.arm(4)]; %Add arm parameters
     input = [input pts_foot(:)']; % final size of input should be 28x1
     
     params.timeout  = (start_period+traj_time+end_period);  
     
     output_size = 19;    % number of outputs expected
     output_data = RunExperiment(frdm_ip,frdm_port,input,output_size,params);
+    x_des_out= output_data(16)
     linkaxes([a1 a2 a3 a4],'x')
     
 end
