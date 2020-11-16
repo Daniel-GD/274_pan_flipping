@@ -72,12 +72,6 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, pts_foot
     h_foot.XData=[];
     h_foot.YData=[];
     
-    % Define leg length parameters
-    l_OA = 0.0084125; 
-    l_OB = 0.042; 
-    l_AC = 0.096; 
-    l_DE = 0.091;
-
     p   = parameters();
     
     % This function will get called any time there is new data from

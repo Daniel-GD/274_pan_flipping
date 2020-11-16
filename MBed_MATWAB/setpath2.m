@@ -7,4 +7,3 @@
 % pwd is the Present Working Directory
 addpath([pwd '/../MATLAB Simulation/AutoDerived/Arm'])
 addpath([pwd '/../MATLAB Simulation/Modeling'])
-keypoints_arm
