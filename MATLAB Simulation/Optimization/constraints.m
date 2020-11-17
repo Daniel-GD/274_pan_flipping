@@ -30,8 +30,11 @@ function [cineq ceq] = constraints(x,z0,p,dt,extra)
 %     ctrl.T2=x(3+bezier_pts:end);
     tf=extra(1);
     ctrl.tf=extra(2);
-    ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
-    ctrl.T2=x(1+bezier_pts:end);
+%     ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+%     ctrl.T2=x(1+bezier_pts:end);    
+    ctrl.T1 = extra(3:end);
+    ctrl.T2 = x;
+    
     
     % z0 is a struct with arm & pk
     [arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);
