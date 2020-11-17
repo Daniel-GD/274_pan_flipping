@@ -26,12 +26,20 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 %% Define Simulation Parameters
 tf=.5;
 dt=.00001;
-ub=[.5 .2 -1 -1];
+% ub=[.5 .2 -1 -1];
 T1=[.5 .2 -1 -1];
 T2=[.5 .4 -1 -1];
 T1=[.5 .5 -.5 -.5];
 T2=[-.1 .73 .5 -1];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
+
+x=[tf ctrl.tf T1 T2];
+x=[0.4993    0.5890    0.7787    0.4168   -0.6808    0.3996    0.4231   -0.6759];
+tf=x(1);
+ctrl.tf=x(2);
+ctrl.T1=x(3:5); %BUG HERE
+ctrl.T2=x(6:end);
+
 
 
 %% Run and animate simulation

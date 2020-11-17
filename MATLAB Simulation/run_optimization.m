@@ -12,17 +12,17 @@ setpath                                     % add AutoDerived, Modeling, and Vis
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = pi/4; %+.1;
-th2_0 = pi/6;%-pi/6;
+th1_0 = 0; %+.1;
+th2_0 = pi/2;%-pi/6;
 dth1_0=0; %pi/2;
-dth2_0=0 ;%2*pi;%2*pi;
+dth2_0=0; %2*pi;%2*pi;
 
 z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
-x0=pan_position(1,3); %place the pancake at the center of mass
+x0=pan_position(1,3)+.03; %place the pancake at the center of mass
 y0=pan_position(2,3);
 th0=pi/2+th1_0+th2_0;
 dx0=0; dy0=0; dth0=0;
@@ -38,9 +38,9 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 
 % set guess
 % tf = .5;                                        % simulation final time
-tf = 0;                                        % guess for time minimization
-dt = 0.0001;                                    % time step
-ctrl.tf = 0.35;                                  % control time points
+tf = .5;                                        % guess for time minimization
+dt = 0.00001;                                    % time step
+ctrl.tf = 0.3;                                  % control time points
 ctrl.T1 = [.5 .5 -1];                             % control values
 ctrl.T2 = [.5 .5 -1];
 % ctrl.T = [0 0 0];                               % guess for energy minimization
@@ -58,6 +58,9 @@ problem.Aineq = []; problem.bineq = [];         % no linear inequality constrain
 problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
+
+% options = optimoptions('fmincon','Display','iter');
+
 x = fmincon(problem)                           % solve nonlinear programming problem
 
 obj= objective(x,z0,p)
@@ -66,9 +69,9 @@ obj= objective(x,z0,p)
 % re-define tf, tfc, and ctrl here to reflect your solution.
 tf=x(1);
 ctrl.tf=x(2);
-ctrl.T1=x(3:6);
+ctrl.T1=x(3:5); %BUG HERE
 ctrl.T2=x(6:end);
-ctrl
+ctrl;
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
 [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);

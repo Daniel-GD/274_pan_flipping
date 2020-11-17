@@ -28,7 +28,7 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     
     axis equal
     axis([-.2 .2 -.2 .2]);
-    skip_frame = 500;
+    skip_frame = 80;
     
     %Step through and update animation
     for i=1:numel(tspan)

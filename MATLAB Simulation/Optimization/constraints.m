@@ -23,44 +23,60 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     % constraints
     % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
-    tf = x(1);
-    ctrl.tf = tf;
-    ctrl.T1 = x(3:6);
-    ctrl.T2 = x(6:end);
+    bezier_pts=3;
+    tf=x(1);
+    ctrl.tf=x(2);
+    ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
+    ctrl.T2=x(3+bezier_pts:end);
     
     % z0 is a struct with arm & pk
-    [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
+    [arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);
+%     animate_system(arm, pk, contact_pts, p, tspan);
     z_out_arm = arm.z_out;
     z_out_pk = pk.z_out;
-    
+    z_out_pk(:,end);
     %Pan must flip
     % final angle must be 180 deg -- we could also change this to any
     % multiple of 180?
+    pk_th0=z0.pk(3);
+    pk_thf=z_out_pk(3,end);
+    delta_th=-(pk_thf-pk_th0);
+    cineq_flip = pi-delta_th;
     
-    ceq = [z_out_pk(3:end)-pi];
+    
+
     
     
     %Pan must not fall from the pan
+    pk_final_com=z_out_pk(1:2,end); %2x1 vector
+    %Get left of pan
+    pan_final_positions=get_pan_position(z_out_arm(:,end),p.arm); % 2x3 vector
+    cineq_fall_side=pan_final_positions(1,1)-pk_final_com(1); %com of x direction
+    
+    
+    cineq =[cineq_flip cineq_fall_side];
+    
+    ceq=[];
     %Rightmost point of pancake < rightmost point of pan
     % get pan rightmost position
-    arm_kpts = keypoints_arm(z0.arm,p.arm);
-    pk_kpts = keypoints_pancake(z0.pk,p.pk);
+%     arm_kpts = keypoints_arm(z0.arm,p.arm);
+%     pk_kpts = keypoints_pancake(z0.pk,p.pk);
     
-    size(arm_kpts)
-    size(pk_kpts)
-    arm_kpts
-    pk_kpts
-    size(arm.z_out)
-    size(pk.z_out)
+%     size(arm_kpts)
+%     size(pk_kpts)
+%     arm_kpts
+%     pk_kpts
+%     size(arm.z_out)
+%     size(pk.z_out)
     
     % comparing x points
-    cineq1 = arm_kpts(1,end)-pk_kpts(1,end);
-    
-    % we dont want the arm to overextend
-    cineq2 = max(arm.z_out(1,:))-pi/2; % don't overextend first arm, th1
-    cineq3 = max(arm.z_out(2,:))-pi/2; % don't overextend second arm, th2
-    
-    cineq = [cineq1, cineq2, cineq3];
+%     cineq1 = arm_kpts(1,end)-pk_kpts(1,end);
+%     
+%     % we dont want the arm to overextend
+%     cineq2 = max(arm.z_out(1,:))-pi/2; % don't overextend first arm, th1
+%     cineq3 = max(arm.z_out(2,:))-pi/2; % don't overextend second arm, th2
+%     
+%     cineq = [cineq1, cineq2, cineq3];
     %Torque limits
     
     %Joint limits

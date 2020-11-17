@@ -70,14 +70,14 @@ for i=1:num_steps-1
     uout(:,i+1) = [u; u_pk];
     last_contact=contact;
 end
-state
+state;
 arm.z_out=z_out_arm;
 pk.z_out=z_out_pk;
 end
 
 %% Control
 function u = control_laws(t,z,ctrl,state)
-    if state <2 %pancake is in contact w the pan
+    if state <2 && t<ctrl.tf %pancake is in contact w the pan
         u1 = BezierCurve(ctrl.T1, t/ctrl.tf);
         u2 = BezierCurve(ctrl.T2, t/ctrl.tf);
     else %pancake is in flight
