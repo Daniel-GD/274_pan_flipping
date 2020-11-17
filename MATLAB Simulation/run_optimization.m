@@ -49,11 +49,14 @@ T1=[.5 .5 -.5 -.5];
 T2=[-.1 .73 .5 -1];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
+extra=[ tf ctrl.tf];
 
-x0 = [tf, ctrl.tf, ctrl.T1, ctrl.T2]
+
+x0 = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
+x0=x0(3:end);
 % % setup and solve nonlinear programming problem
 problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
-problem.nonlcon = @(x) constraints(x,z0,p,dt);     % create anonymous function that returns nonlinear constraints
+problem.nonlcon = @(x) constraints(x,z0,p,dt,extra);     % create anonymous function that returns nonlinear constraints
 problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
 
 % does this change? I added a ctrl.T2 which controls the second motor
@@ -72,10 +75,13 @@ obj= objective(x,z0,p)
 
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
-tf=x(1);
-ctrl.tf=x(2);
+% tf=x(1);
+% ctrl.tf=x(2);
 ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
 ctrl.T2=x(3+bezier_pts:end);
+
+ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+ctrl.T2=x(1+bezier_pts:end);
 ctrl;
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation

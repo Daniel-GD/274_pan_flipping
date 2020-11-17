@@ -34,13 +34,17 @@ T2=[-.1 .73 .5 -1];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 x=[tf ctrl.tf T1 T2];
+% x= [0.5014    0.2798    0.4891    0.4919   -0.4766   -0.4811   -0.0437    0.6454    0.4135   -0.9890];
 % x=[0.4993    0.5890    0.7787    0.4168   -0.6808    0.3996    0.4231   -0.6759];
 % tf=x(1);
 % ctrl.tf=x(2);
 % ctrl.T1=x(3:5); %BUG HERE
 % ctrl.T2=x(6:end);
+bezier_pts=4;
 
-
+ctrl.tf=.3;
+ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+ctrl.T2=x(1+bezier_pts:end);
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);

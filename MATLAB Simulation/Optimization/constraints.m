@@ -1,4 +1,4 @@
-function [cineq ceq] = constraints(x,z0,p,dt)
+function [cineq ceq] = constraints(x,z0,p,dt,extra)
 % Inputs:
 % x - an array of decision variables.
 % z0 - the initial state
@@ -24,10 +24,14 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
     bezier_pts=4;
-    tf=x(1);
-    ctrl.tf=x(2);
-    ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
-    ctrl.T2=x(3+bezier_pts:end);
+%     tf=x(1);
+%     ctrl.tf=x(2);
+%     ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
+%     ctrl.T2=x(3+bezier_pts:end);
+    tf=extra(1);
+    ctrl.tf=extra(2);
+    ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+    ctrl.T2=x(1+bezier_pts:end);
     
     % z0 is a struct with arm & pk
     [arm, pk, contact_pts, tspan]=simulate_system(z0, p, ctrl, tf, dt);
@@ -41,7 +45,10 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     pk_th0=z0.pk(3);
     pk_thf=z_out_pk(3,end);
     delta_th=-(pk_thf-pk_th0);
+    delta_th=abs(pk_thf-pk_th0);
     cineq_flip = pi-delta_th;
+    
+    cineq_flip_too_much = delta_th-2*pi;
     
 
     
@@ -52,7 +59,8 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     pan_final_positions=get_pan_position(z_out_arm(:,end),p.arm); % 2x3 vector
     cineq_fall_side=pan_final_positions(1,1)-pk_final_com(1); %com of x direction
     
-    cineq =[cineq_flip cineq_fall_side];
+    cineq =[cineq_flip cineq_flip_too_much cineq_fall_side];
+%     cineq =[cineq_flip  cineq_fall_side];
     
     ceq=[];
     %Rightmost point of pancake < rightmost point of pan
