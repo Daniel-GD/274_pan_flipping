@@ -21,6 +21,8 @@ function [cineq ceq] = constraints(x,z0,p,dt,extra)
 % functions with ode45().
 
     % constraints
+    
+    tol1=.01;
     % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
     bezier_pts=4;
@@ -60,12 +62,15 @@ function [cineq ceq] = constraints(x,z0,p,dt,extra)
     pk_final_com=z_out_pk(1:2,end); %2x1 vector
     %Get left of pan
     pan_final_positions=get_pan_position(z_out_arm(:,end),p.arm); % 2x3 vector
-    cineq_fall_side=pan_final_positions(1,1)-pk_final_com(1); %com of x direction
+    cineq_fall_left=pan_final_positions(1,1)-pk_final_com(1); %edge of the pan
+    cineq_fall_left=pan_final_positions(1,3)-pk_final_com(1); %com of pan
+    cineq_fall_right=pk_final_com(1)-pan_final_positions(1,2); %right edge of pan
     
-    cineq =[cineq_flip cineq_flip_too_much cineq_fall_side];
+    cineq =[cineq_flip cineq_flip_too_much cineq_fall_left cineq_fall_right];
+    cineq= [cineq_fall_left cineq_fall_right];
 %     cineq =[cineq_flip  cineq_fall_side];
     
-    ceq=[];
+    ceq=[delta_th-pi];
     %Rightmost point of pancake < rightmost point of pan
     % get pan rightmost position
 %     arm_kpts = keypoints_arm(z0.arm,p.arm);

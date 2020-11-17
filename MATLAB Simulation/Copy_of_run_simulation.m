@@ -50,9 +50,7 @@ ctrl.tf=.25;
 ctrl.T1=[.5 .5 -.5 -.5];
 % ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
 % ctrl.T2=x(1+bezier_pts:end);
-x = [-0.0238    0.5936    0.4211   -0.7933];
-x= [-0.0394    0.6270    0.4255   -0.8444];
-x=[-0.0496    0.6421    0.4126   -0.8877];
+x = [-0.3292    0.5964   -0.0979   -0.0668];
 ctrl.T2 = x;
 
 %% Run and animate simulation

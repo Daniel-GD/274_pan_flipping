@@ -54,12 +54,13 @@ extra=[tf ctrl.tf ctrl.T1];
 % x0 = x0(3:end);
 x0 = ctrl.T2;
 % % setup and solve nonlinear programming problem
+%@(x)0
 problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
 problem.nonlcon = @(x) constraints(x,z0,p,dt,extra);     % create anonymous function that returns nonlinear constraints
 % problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
 problem.x0 = x0;
-problem.lb = [-bezier_pts*ones(size(ctrl.T2))];
-problem.ub = [bezier_pts*ones(size(ctrl.T2))];
+problem.lb = [-2*ones(size(ctrl.T2))];
+problem.ub = [2*ones(size(ctrl.T2))];
 % problem.lb = [.1 .1 -bezier_pts*ones(size(ctrl.T1)) -bezier_pts*ones(size(ctrl.T2))];     % lower bound on decision variables
 % problem.ub = [1  1   bezier_pts*ones(size(ctrl.T1))  bezier_pts*ones(size(ctrl.T2))];     % upper bound on decision variables
 problem.Aineq = []; problem.bineq = [];         % no linear inequality constraints
@@ -67,6 +68,7 @@ problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
 
+problem.options=optimoptions('fmincon','ConstraintTolerance', .01);
 % options = optimoptions('fmincon','Display','iter');
 
 x = fmincon(problem)                           % solve nonlinear programming problem

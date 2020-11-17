@@ -73,6 +73,7 @@ A = jacobian(g,ddq);
 b = A*ddq - g;
 
 J=jacobian(rC,q);
+[rB(1:2) rC(1:2) rc2(1:2)]
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
