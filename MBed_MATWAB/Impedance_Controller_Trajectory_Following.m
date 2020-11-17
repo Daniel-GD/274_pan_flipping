@@ -1,3 +1,5 @@
+setpath2
+clear all; close all; clc;
 % This is the main MATLAB script for Lab 4.
 %
 % You will need to modify the Mbed code and this script, but should not need to make any other changes.
@@ -9,11 +11,16 @@ const_point = [0.1;-.1]; %[x;y] or [q1,q2] constant coordinate (x,q1,q2 coordina
 const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
-T1=-[0 0 0 0];
-T2=-[0 0 0 0];
+T1=[-.01 .73 .5 -1];
+T2=[-0.0445    0.6433    0.4351   -0.8695];
+
+T1=-[-.01 .73 .5 -1];
+T2=-[-0.0445    0.6433    0.4351   -2];
+% T1=-[0 0 0 0];
+% T2=-[0 0 0 0];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=.25;
 len_pts = length(T1);
-torque_pts= [ctrl.T1 ctrl.T2];
+torque_pts= [ctrl.T1 ;ctrl.T2];
 
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
@@ -75,10 +82,16 @@ final_pos=[x(end) y(end)]
 
 subplot(211); hold on
 plot(t,tau1_des,'r-'); plot(t,tau1);
+xline(pre_buffer_time);
+xline(pre_buffer_time+ctrl.tf);
+xlim([(pre_buffer_time-.1) (pre_buffer_time+ctrl.tf+.1)]);
 xlabel('Time (s)'); ylabel('TAU1'); legend({'Desired','Actual'});
 
 subplot(212); hold on
 plot(t,tau2_des,'r-'); plot(t,tau2);
+xline(pre_buffer_time);
+xline(pre_buffer_time+ctrl.tf);
+xlim([(pre_buffer_time-.1) (pre_buffer_time+ctrl.tf+.1)]);
 xlabel('Time (s)'); ylabel('TAU2'); legend({'Desired','Actual'});
 
 % figure(4); clf; hold on

@@ -63,7 +63,7 @@ function [cineq ceq] = constraints(x,z0,p,dt,extra)
     %Get left of pan
     pan_final_positions=get_pan_position(z_out_arm(:,end),p.arm); % 2x3 vector
     cineq_fall_left=pan_final_positions(1,1)-pk_final_com(1); %edge of the pan
-    cineq_fall_left=pan_final_positions(1,3)-pk_final_com(1); %com of pan
+%     cineq_fall_left=pan_final_positions(1,3)-pk_final_com(1); %com of pan
     cineq_fall_right=pk_final_com(1)-pan_final_positions(1,2); %right edge of pan
     
     cineq =[cineq_flip cineq_flip_too_much cineq_fall_left cineq_fall_right];
