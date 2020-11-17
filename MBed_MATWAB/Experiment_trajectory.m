@@ -60,7 +60,7 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     axis equal
     axis([-.25 .25 -.25 .1]);
    
-    yline(0)
+%     yline(0)
     h_AB = plot([0],[0],'LineWidth',2);
     h_BC = plot([0],[0],'LineWidth',2);
     h_c1 = plot([0],[0],'ro','MarkerSize',6);
@@ -165,13 +165,13 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     D_yy                     = gains.D_yy; % Damping
     D_xy                     = gains.D_xy; % Damping
     
-    % Specify inputs
-    input = [start_period traj_time end_period];
-    input = [input angle1_init angle2_init];
-    input = [input K_xx K_yy K_xy D_xx D_yy D_xy];
-    input = [input duty_max];
-    input = [input p.arm(3) p.arm(4)]; %Add arm parameters
-    input = [input torque_pts(:)']; % final size of input should be 28x1
+    % Specify inputs                             % in MBed, indeces:
+    input = [start_period traj_time end_period]; % 0 1 2
+    input = [input angle1_init angle2_init];     % 3 4
+    input = [input K_xx K_yy K_xy D_xx D_yy D_xy]; % 5 6 7 8 9 10
+    input = [input duty_max]; % 11
+    input = [input p.arm(3) p.arm(4)]; %Add arm parameters %12 13
+    input = [input torque_pts(:)']; % final size of input should be 28x1 %14:end
     
     params.timeout  = (start_period+traj_time+end_period);  
     

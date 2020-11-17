@@ -9,12 +9,11 @@ const_point = [0.1;-.1]; %[x;y] or [q1,q2] constant coordinate (x,q1,q2 coordina
 const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
-
-T1=-[.5 0 -.5 -.5];
-T2=-[-.1 .35 .5 -1];
+T1=-[0 0 0 0];
+T2=-[0 0 0 0];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=.25;
-
-torque_pts= [ctrl.T1;ctrl.T2];
+len_pts = length(T1);
+torque_pts= [ctrl.T1 ctrl.T2];
 
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
@@ -27,8 +26,8 @@ angle2_init = 0;
 
 % Total experiment time is buffer,trajectory,buffer
 traj_time         = ctrl.tf;
-pre_buffer_time   = 3; % this should be 0 for constant points, 2 for Bezier trajectories
-post_buffer_time  = 5;
+pre_buffer_time   = 4; % this should be 0 for constant points, 2 for Bezier trajectories
+post_buffer_time  = 3;
 
 % Gains for impedance controller
 % If a gain is not being used in your Mbed code, set it to zero
@@ -37,8 +36,8 @@ gains.K_xx = 2;
 gains.K_yy = 2;
 gains.K_xy = 0;
 
-gains.D_xx = 0.01;
-gains.D_yy = 0.01;
+gains.D_xx = 0.05;
+gains.D_yy = 0.05;
 gains.D_xy = 0;
 
 % Maximum duty cycle commanded by controller (should always be <=1.0)
@@ -60,11 +59,12 @@ tau1 = output_data(:,16);      % desired foot position (negative due to directio
 tau2 = output_data(:,17);      % desired foot position        
 tau1_des = output_data(:,18);      % desired foot position (negative due to direction motors are mounted)
 tau2_des = output_data(:,19);      % desired foot position   
-
+tau1(1:10:end);
+tau2(1:10:end);
 final_pos=[x(end) y(end)]
 
 %% Plot foot vs desired
-figure(3); clf;
+% figure(3); clf;
 % subplot(211); hold on
 % plot(t,xdes,'r-'); plot(t,x);
 % xlabel('Time (s)'); ylabel('X (m)'); legend({'Desired','Actual'});
@@ -72,6 +72,7 @@ figure(3); clf;
 % subplot(212); hold on
 % plot(t,ydes,'r-'); plot(t,y);
 % xlabel('Time (s)'); ylabel('Y (m)'); legend({'Desired','Actual'});
+
 subplot(211); hold on
 plot(t,tau1_des,'r-'); plot(t,tau1);
 xlabel('Time (s)'); ylabel('TAU1'); legend({'Desired','Actual'});
