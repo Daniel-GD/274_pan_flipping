@@ -41,19 +41,24 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 tf = .5;                                        % guess for time minimization
 dt = 0.00001;                                    % time step
 ctrl.tf = 0.3;                                  % control time points
-ctrl.T1 = [.5 .5 -1];                             % control values
-ctrl.T2 = [.5 .5 -1];
+% ctrl.T1 = [.5 .5 -1];                             % control values
+% ctrl.T2 = [.5 .5 -1];
 % ctrl.T = [0 0 0];                               % guess for energy minimization
+bezier_pts=4;
+T1=[.5 .5 -.5 -.5];
+T2=[-.1 .73 .5 -1];
+ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
-x = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
+
+x0 = [tf, ctrl.tf, ctrl.T1, ctrl.T2]
 % % setup and solve nonlinear programming problem
 problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
 problem.nonlcon = @(x) constraints(x,z0,p,dt);     % create anonymous function that returns nonlinear constraints
 problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
 
 % does this change? I added a ctrl.T2 which controls the second motor
-problem.lb = [.1 .1 -3*ones(size(ctrl.T1)) -3*ones(size(ctrl.T2))];     % lower bound on decision variables
-problem.ub = [1  1   3*ones(size(ctrl.T1))  3*ones(size(ctrl.T2))];     % upper bound on decision variables
+problem.lb = [.1 .1 -bezier_pts*ones(size(ctrl.T1)) -bezier_pts*ones(size(ctrl.T2))];     % lower bound on decision variables
+problem.ub = [1  1   bezier_pts*ones(size(ctrl.T1))  bezier_pts*ones(size(ctrl.T2))];     % upper bound on decision variables
 problem.Aineq = []; problem.bineq = [];         % no linear inequality constraints
 problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
@@ -69,8 +74,8 @@ obj= objective(x,z0,p)
 % re-define tf, tfc, and ctrl here to reflect your solution.
 tf=x(1);
 ctrl.tf=x(2);
-ctrl.T1=x(3:5); %BUG HERE
-ctrl.T2=x(6:end);
+ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
+ctrl.T2=x(3+bezier_pts:end);
 ctrl;
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation

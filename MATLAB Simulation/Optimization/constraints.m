@@ -23,7 +23,7 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     % constraints
     % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
-    bezier_pts=3;
+    bezier_pts=4;
     tf=x(1);
     ctrl.tf=x(2);
     ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
@@ -43,7 +43,6 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     delta_th=-(pk_thf-pk_th0);
     cineq_flip = pi-delta_th;
     
-    
 
     
     
@@ -52,7 +51,6 @@ function [cineq ceq] = constraints(x,z0,p,dt)
     %Get left of pan
     pan_final_positions=get_pan_position(z_out_arm(:,end),p.arm); % 2x3 vector
     cineq_fall_side=pan_final_positions(1,1)-pk_final_com(1); %com of x direction
-    
     
     cineq =[cineq_flip cineq_fall_side];
     
