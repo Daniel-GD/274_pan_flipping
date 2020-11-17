@@ -10,8 +10,8 @@ const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
 
-T1=[.5 .5 -.5 -.5];
-T2=[-.1 .73 .5 -1];
+T1=-[.5 0 -.5 -.5];
+T2=-[-.1 .35 .5 -1];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=.25;
 
 torque_pts= [ctrl.T1;ctrl.T2];
@@ -23,26 +23,26 @@ torque_pts= [ctrl.T1;ctrl.T2];
 
 % Initial leg angles for encoder resets (negative of q1,q2 in lab handout due to direction motors are mounted)
 angle1_init = 0;
-angle2_init = pi/2;
+angle2_init = 0;
 
 % Total experiment time is buffer,trajectory,buffer
 traj_time         = ctrl.tf;
-pre_buffer_time   = 2; % this should be 0 for constant points, 2 for Bezier trajectories
+pre_buffer_time   = 3; % this should be 0 for constant points, 2 for Bezier trajectories
 post_buffer_time  = 5;
 
 % Gains for impedance controller
 % If a gain is not being used in your Mbed code, set it to zero
 % For joint space control, use K_xx for K1, K_yy for K2, D_xx for D1, D_yy for D2
-gains.K_xx = 100;
-gains.K_yy = 150;
+gains.K_xx = 2;
+gains.K_yy = 2;
 gains.K_xy = 0;
 
-gains.D_xx = 5;
-gains.D_yy = 5;
+gains.D_xx = 0.01;
+gains.D_yy = 0.01;
 gains.D_xy = 0;
 
 % Maximum duty cycle commanded by controller (should always be <=1.0)
-duty_max   = .1;
+duty_max   = .3;
 
 %% Run Experiment
 [output_data] = Experiment_trajectory( angle1_init, angle2_init, torque_pts,...
