@@ -27,6 +27,7 @@ z_out_pk(:,1) = z0.pk;
 u_pk=[0;0;0]; %Initialize u 
 
 state=0; 
+left_pan=false;
 contact=false;
 last_contact=false;
 iphase_list = 1;
@@ -59,6 +60,11 @@ for i=1:num_steps-1
     
     if state<2
         energy = energy + (u(1)^2 + u(2)^2)*dt;
+    else
+        if ~left_pan
+            left_pan=true;
+            tout(i)
+        end
     end
     
 %     end
