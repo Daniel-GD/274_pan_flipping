@@ -55,7 +55,7 @@ extra=[tf ctrl.tf ctrl.T1];
 x0 = ctrl.T2;
 % % setup and solve nonlinear programming problem
 %@(x)0
-problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
+problem.objective = @(x) objective(x,z0,p,dt,extra);     % create anonymous function that returns objective
 problem.nonlcon = @(x) constraints(x,z0,p,dt,extra);     % create anonymous function that returns nonlinear constraints
 % problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
 problem.x0 = x0;
@@ -73,7 +73,7 @@ problem.options=optimoptions('fmincon','ConstraintTolerance', .01);
 
 x = fmincon(problem)                           % solve nonlinear programming problem
 
-obj= objective(x,z0,p)
+obj= objective(x,z0,p, dt, extra)
 
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
