@@ -60,11 +60,11 @@ for i=1:num_steps-1
     
     if state<2
         energy = energy + (u(1)^2 + u(2)^2)*dt;
-    else
-        if ~left_pan
-            left_pan=true;
-            tout(i)
-        end
+%     else
+%         if ~left_pan
+%             left_pan=true;
+%             tout(i)
+%         end
     end
     
 %     end
