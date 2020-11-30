@@ -39,7 +39,7 @@ function [cineq ceq] = constraints(x,z0,p,dt,extra)
     
     
     % z0 is a struct with arm & pk
-    [arm, pk, contact_pts, tspan, uout]=simulate_system(z0, p, ctrl, tf, dt);
+    [arm, pk, contact_pts, tout, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
 %     animate_system(arm, pk, contact_pts, p, tspan);
     z_out_arm = arm.z_out;
     z_out_pk = pk.z_out;

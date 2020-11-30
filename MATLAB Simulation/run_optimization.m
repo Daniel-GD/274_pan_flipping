@@ -12,17 +12,16 @@ setpath                                     % add AutoDerived, Modeling, and Vis
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = 0; %+.1;
-th2_0 = pi/2;%-pi/6;
+th1_0 = pi/4; %+.1;
+th2_0 = pi/4;%-pi/6;
 dth1_0=0; %pi/2;
-dth2_0=0; %2*pi;%2*pi;
-
+dth2_0=0 ;%2*pi;%2*pi;
 z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
-x0=pan_position(1,3)+.03; %place the pancake at the center of mass
+x0=pan_position(1,3); %place the pancake at the center of mass
 y0=pan_position(2,3);
 th0=pi/2+th1_0+th2_0;
 dx0=0; dy0=0; dth0=0;
@@ -46,7 +45,7 @@ ctrl.tf = 0.25;                                  % control time points
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 bezier_pts=4;
 T1=[.5 .5 -.5 -.5];
-T2=[-.1 .73 .5 -1];
+T2=[-0.0445 0.5 0.18 -0.9695];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 extra=[tf ctrl.tf ctrl.T1];
@@ -73,7 +72,7 @@ problem.options=optimoptions('fmincon','ConstraintTolerance', .01);
 
 x = fmincon(problem)                           % solve nonlinear programming problem
 
-obj= objective(x,z0,p, dt, extra)
+obj= objective(x,z0,p,dt,extra)
 
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
