@@ -87,9 +87,10 @@ function u = control_laws(t,z,ctrl,state)
         dth1 = z(3,:);     
         dth2 = z(4,:);           % leg angular velocity
 
-        th1_d = 0;             % desired leg angle
-        th2_d = pi/2;
+        th1_d = -pi/6;             % desired leg angle
+        th2_d = pi/6+pi/2;
         k1 = 40;  k2 = 40;                % stiffness (N/rad)
+        k1 = 5;  k2 = 5;                % stiffness (N/rad)
         b1 = .5; b2 = .5;                % damping (N/(rad/s))
         
         %Apply joint pd control

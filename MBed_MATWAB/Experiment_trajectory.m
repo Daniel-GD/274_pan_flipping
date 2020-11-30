@@ -61,8 +61,9 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     axis([-.25 .25 -.25 .1]);
    
 %     yline(0)
-    h_AB = plot([0],[0],'LineWidth',2);
-    h_BC = plot([0],[0],'LineWidth',2);
+    h_AB = plot([0],[0],'r','LineWidth',5);
+    h_BC = plot([0],[0],'r','LineWidth',5);
+    h_pan = plot([0],[0],'k','LineWidth',6);
     h_c1 = plot([0],[0],'ro','MarkerSize',6);
     h_c2 = plot([0],[0],'ro','MarkerSize',6);
     
@@ -134,10 +135,12 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
         rc1 = keypoints(:,1); 
         rB = keypoints(:,2);
         rc2 = keypoints(:,3);
-        rC = keypoints(:,4);
+        rpA = keypoints(:,4);
+        rC = keypoints(:,5);
         
         set(h_AB,'XData',[0 rB(1)],'YData',[0 rB(2)]);
         set(h_BC,'XData',[rB(1) rC(1)],'YData',[rB(2) rC(2)]);
+        set(h_pan,'XData',[rpA(1) rC(1)],'YData',[rpA(2) rC(2)]);
         set(h_c1,'XData',[rc1(1)],'YData',[rc1(2)]);
         set(h_c2,'XData',[rc2(1)],'YData',[rc2(2)]);
         
