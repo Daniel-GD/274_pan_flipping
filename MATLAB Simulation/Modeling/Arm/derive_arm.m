@@ -1,14 +1,14 @@
 name = 'arm';
 
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
-syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 l1 l2 m1 m2 I1 I2 Ir1 Ir2 N1 N2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
+syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 pA pan_length l1 l2 m1 m2 I1 I2 Ir1 Ir2 N1 N2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
 
 % Group them
 q   = [th1; th2];      % generalized coordinates
 dq  = [dth1; dth2];    % first time derivatives
 ddq = [ddth1; ddth2];  % second time derivatives
 u   = [tau1; tau2];     % controls
-p   = [c1; c2; l1; l2; m1; m2; I1; I2; Ir1; Ir2; N1; N2; k; kappa; g];        % parameters
+p   = [c1; c2; l1; l2; m1; m2; I1; I2; Ir1; Ir2; N1; N2; k; kappa; g; pA];        % parameters
 
 % Generate Vectors and Derivatives
 ihat = [1; 0; 0];
@@ -20,19 +20,24 @@ e2normhat = cos(th1+th2)*ihat+sin(th1+th2)*jhat;
 
 ddt = @(r) jacobian(r,[q;dq])*[dq;ddq]; % a handy anonymous function for taking time derivatives
 
+pan_length=l2-pA;
 %Get key points forward kinematics
 rc1= p(1)*e1hat; %position vector to the CoM of link 1
 rB = p(3)*e1hat; %position vector to point B
 rc2= rB+p(2)*e2hat; %position vector to the CoM of link 2
 rC = rB+p(4)*e2hat; %position vector to point C (end effector)
+rpA= rB+pA*e2hat; %left edge of pan
+rpcom= rB+(pA+pan_length/2)*e2hat; %center of mass of pan
 
-rt_param= rB+t_param*p(4)*e2hat;
+
+rt_param= rpA+t_param*pan_length*e2hat;
 
 %time derivatives of position vectors
 drc1= ddt(rc1); 
 drB = ddt(rB);
 drc2= ddt(rc2);
 drC = ddt(rC);
+dpA = ddt(rpA);
 
 drt_param = ddt(rt_param);
 
@@ -59,7 +64,7 @@ Q_tau2 = M2Q(tau2*khat,dth2*khat);
 Q = Q_tau1 + Q_tau2;%Q_F;
 
 % Assemble the array of cartesian coordinates of the key points
-keypoints = [rc1(1:2) rB(1:2) rc2(1:2) rC(1:2)];
+keypoints = [rc1(1:2) rB(1:2) rc2(1:2) rpA(1:2) rC(1:2)];
 
 %% All the work is done!  Just turn the crank...
 % Derive Energy Function and Equations of Motion
@@ -73,7 +78,8 @@ A = jacobian(g,ddq);
 b = A*ddq - g;
 
 J=jacobian(rC,q);
-[rB(1:2) rC(1:2) rc2(1:2)]
+[rB(1:2) rC(1:2) rc2(1:2)];
+pan_position=[rpA(1:2) rC(1:2) rpcom(1:2)];
 
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
@@ -84,7 +90,7 @@ matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
 matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
 matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});
 matlabFunction(keypoints,'file',[directory 'keypoints_' name],'vars',{z p});
-matlabFunction([rB(1:2) rC(1:2) rc2(1:2)],'file',[directory 'get_pan_position'],'vars',{z p});
+matlabFunction(pan_position,'file',[directory 'get_pan_position'],'vars',{z p});
 matlabFunction(e2hat(1:2),'file',[directory 'pan_parallel'],'vars',{z p});
 matlabFunction(e2normhat(1:2),'file',[directory 'pan_normal'],'vars',{z p});
 matlabFunction(rt_param(1:2),'file',[directory 'pan_position_interpolation'],'vars',{z p t_param});

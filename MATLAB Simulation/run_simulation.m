@@ -4,8 +4,8 @@ setpath
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = 0; %+.1;
-th2_0 = pi/2;%-pi/6;
+th1_0 = pi/4; %+.1;
+th2_0 = pi/4;%-pi/6;
 dth1_0=0; %pi/2;
 dth2_0=0 ;%2*pi;%2*pi;
 
@@ -14,7 +14,7 @@ z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
-x0=pan_position(1,3)+0.03; %place the pancake at the center of mass
+x0=pan_position(1,3); %place the pancake at the center of mass
 y0=pan_position(2,3);
 th0=pi/2+th1_0+th2_0;
 dx0=0; dy0=0; dth0=0;
@@ -24,12 +24,13 @@ z0_pk=[x0; y0; th0; dx0; dy0; dth0];
 z0= struct('arm',z0_arm,'pk',z0_pk);
 
 %% Define Simulation Parameters
-tf=.5;
+tf=.6;
 dt=.00001;
 % ub=[.5 .2 -1 -1];
 % T1=[.5 .2 -1 -1];
 % T2=[.5 .4 -1 -1];
-T1 = [.5 .5 -0.5 -0.5];
+T1 = [.6 .6 -0.5 -0.5];
+T1 = [.6 .6 -1 -1];
 T2 = [-.1 .73 .5 -1];
 % T1=[.6 .5 -.5 -.5];
 % T2=[-.1 .765 .5 -1];
@@ -52,7 +53,8 @@ ctrl.T1=[.5 .5 -.5 -.5];
 % ctrl.T2=x(1+bezier_pts:end);
 x = [-0.0238    0.5936    0.4211   -0.7933];
 x= [-0.0394    0.6270    0.4255   -0.8444];
-x=[-0.0445    0.6433    0.4351   -0.8695];
+x=[-0.0445    0.6433    0.4351   -0.8695]; %Good initial guess for last system
+x=[-0.0445    0.5    0.18   -0.9695]; % 
 % x=[-0.0496    0.6421    0.4126   -0.8877];
 ctrl.T2 = x;
 
