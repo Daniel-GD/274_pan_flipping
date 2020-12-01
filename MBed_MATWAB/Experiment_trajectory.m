@@ -1,4 +1,4 @@
-function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_pts, traj_time, pre_buffer_time, post_buffer_time, gains, duty_max)
+function output_data = Experiment_trajectory( angle1_init, angle2_init, shoulder, elbow, torque_pts, traj_time, pre_buffer_time, post_buffer_time, gains, duty_max)
     
     % Figure for plotting motor data
     figure(1);  clf;       
@@ -58,18 +58,19 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     clf
     hold on
     axis equal
-    axis([-.25 .25 -.25 .1]);
+    axis([-.2 .1 -.2 .075]);
    
 %     yline(0)
-    h_AB = plot([0],[0],'LineWidth',2);
     h_BC = plot([0],[0],'LineWidth',2);
-    h_c1 = plot([0],[0],'ro','MarkerSize',6);
-    h_c2 = plot([0],[0],'ro','MarkerSize',6);
+    h_AB = plot([0],[0],'b-','LineWidth',5);
+    h_BC = plot([0],[0],'b-','LineWidth',3);
+    h_c1 = plot([0],[0],'ro','MarkerSize',7);
+    h_c2 = plot([0],[0],'ro','MarkerSize',5);
     
     h_foot= plot([0],[0],'k');
-    h_des = plot([0],[0],'k--');
-    h_des.XData=[];
-    h_des.YData=[];
+%     h_des = plot([0],[0],'k--');
+%     h_des.XData=[];
+%     h_des.YData=[];
     h_foot.XData=[];
     h_foot.YData=[];
     
@@ -141,10 +142,10 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
         set(h_c1,'XData',[rc1(1)],'YData',[rc1(2)]);
         set(h_c2,'XData',[rc2(1)],'YData',[rc2(2)]);
         
-        h_foot.XData(end+1:end+N) = x;
+        h_foot.XData(end+1:end+N) = -x;
         h_foot.YData(end+1:end+N) = y;
-        h_des.XData(end+1:end+N) = tau1_des;
-        h_des.YData(end+1:end+N) = tau2_des;
+%         h_des.XData(end+1:end+N) = tau1_des;
+%         h_des.YData(end+1:end+N) = tau2_des;
         
     end
     
@@ -154,8 +155,8 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     %params.timeout  = 2;            % end of experiment timeout
     
     % Parameters for tuning
-    start_period                = pre_buffer_time;    % In seconds 
-    end_period                  = post_buffer_time;   % In seconds
+%     start_period                = pre_buffer_time;    % In seconds 
+%     end_period                  = post_buffer_time;   % In seconds
     
     K_xx                     = gains.K_xx; % Stiffness
     K_yy                     = gains.K_yy; % Stiffness
@@ -166,16 +167,16 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, torque_p
     D_xy                     = gains.D_xy; % Damping
     
     % Specify inputs                             % in MBed, indeces:
-    input = [start_period traj_time end_period]; % 0 1 2
-    input = [input angle1_init angle2_init];     % 3 4
-    input = [input K_xx K_yy K_xy D_xx D_yy D_xy]; % 5 6 7 8 9 10
-    input = [input duty_max]; % 11
-    input = [input p.arm(3) p.arm(4)]; %Add arm parameters %12 13
-    input = [input torque_pts(:)']; % final size of input should be 28x1 %14:end
+    input = [pre_buffer_time traj_time post_buffer_time]; % 0 1 2
+    input = [input angle1_init angle2_init shoulder elbow];     % 3 4 5 6
+    input = [input K_xx K_yy K_xy D_xx D_yy D_xy]; % 7 8 9 10 11 12
+    input = [input duty_max]; % 13
+    input = [input p.arm(3) p.arm(4)]; %Add arm parameters %14 15
+    input = [input torque_pts(:)']; % final size of input should be 28x1 16:end
     
-    params.timeout  = (start_period+traj_time+end_period);  
+    params.timeout  = (pre_buffer_time+traj_time+post_buffer_time);  
     
-    output_size = 19;    % number of outputs expected
+    output_size = 21;    % number of outputs expected
     output_data = RunExperiment(frdm_ip,frdm_port,input,output_size,params);
     linkaxes([a1 a2 a3 a4],'x')
     

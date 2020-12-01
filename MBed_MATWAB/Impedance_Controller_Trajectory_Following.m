@@ -9,11 +9,10 @@ const_point = [0.1;-.1]; %[x;y] or [q1,q2] constant coordinate (x,q1,q2 coordina
 const_point(1)=-const_point(1);
 pts_foot = repmat(const_point,1,8);
 
-T1=-[0 0 0 0];
-T2=-[0 0 0 0];
+T1=-[.07 .45 -.25];
+T2=-[-.3 .55 0];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=.25;
-len_pts = length(T1);
-torque_pts= [ctrl.T1 ctrl.T2];
+torque_pts= [ctrl.T1; ctrl.T2];
 
 % pts =[    0.1016    0.1016    0.1016    0.0678   -0.0561   -0.0619   -0.0619   -0.0619
 %    -0.1102   -0.1102   -0.1102   -0.2048   -0.1511   -0.0436   -0.0436   -0.0436];
@@ -23,17 +22,19 @@ torque_pts= [ctrl.T1 ctrl.T2];
 % Initial leg angles for encoder resets (negative of q1,q2 in lab handout due to direction motors are mounted)
 angle1_init = 0;
 angle2_init = 0;
+shoulder = 0;
+elbow = .5*pi+shoulder;
 
 % Total experiment time is buffer,trajectory,buffer
 traj_time         = ctrl.tf;
-pre_buffer_time   = 4; % this should be 0 for constant points, 2 for Bezier trajectories
-post_buffer_time  = 3;
+pre_buffer_time   = 3; % this should be 0 for constant points, 2 for Bezier trajectories
+post_buffer_time  = 2;
 
 % Gains for impedance controller
 % If a gain is not being used in your Mbed code, set it to zero
 % For joint space control, use K_xx for K1, K_yy for K2, D_xx for D1, D_yy for D2
-gains.K_xx = 2;
-gains.K_yy = 2;
+gains.K_xx = 5;
+gains.K_yy = 5;
 gains.K_xy = 0;
 
 gains.D_xx = 0.05;
@@ -41,10 +42,10 @@ gains.D_yy = 0.05;
 gains.D_xy = 0;
 
 % Maximum duty cycle commanded by controller (should always be <=1.0)
-duty_max   = .3;
+duty_max   = .25;
 
 %% Run Experiment
-[output_data] = Experiment_trajectory( angle1_init, angle2_init, torque_pts,...
+[output_data] = Experiment_trajectory( angle1_init, angle2_init, shoulder, elbow, torque_pts,...
                                        traj_time, pre_buffer_time, post_buffer_time,...
                                        gains, duty_max);
 
@@ -61,10 +62,10 @@ tau1_des = output_data(:,18);      % desired foot position (negative due to dire
 tau2_des = output_data(:,19);      % desired foot position   
 tau1(1:10:end);
 tau2(1:10:end);
-final_pos=[x(end) y(end)]
+final_pos=[x(end) y(end)];
 
 %% Plot foot vs desired
-% figure(3); clf;
+figure(3); clf;
 % subplot(211); hold on
 % plot(t,xdes,'r-'); plot(t,x);
 % xlabel('Time (s)'); ylabel('X (m)'); legend({'Desired','Actual'});
