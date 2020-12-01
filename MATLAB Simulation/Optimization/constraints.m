@@ -1,4 +1,4 @@
-function [cineq ceq] = constraints(x,z0,p,dt,extra)
+function [cineq, ceq] = constraints(x,z0,p,dt,extra)
 % Inputs:
 % x - an array of decision variables.
 % z0 - the initial state

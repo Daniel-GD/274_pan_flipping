@@ -24,7 +24,7 @@ z0_pk=[x0; y0; th0; dx0; dy0; dth0];
 z0= struct('arm',z0_arm,'pk',z0_pk);
 
 %% Define Simulation Parameters
-tf=.6;
+tf=.5;
 dt=.00001;
 % ub=[.5 .2 -1 -1];
 % T1=[.5 .2 -1 -1];
@@ -56,9 +56,13 @@ x= [-0.0394    0.6270    0.4255   -0.8444];
 x=[-0.0445    0.6433    0.4351   -0.8695]; %Good initial guess for last system
 x=[-0.0445    0.5    0.18   -0.9695]; % 
 x=[0.0020    0.2088    0.4632   -0.5695];
+% x=[0.0070    0.2050    0.4660   -0.5627]; %opt
+x=[0.0070    0.2050    0.4660   -0.5627];
+x=[ 0.1062    0.1918    0.2082   -0.4769]; %solution w new torque law
 % x=[-0.0496    0.6421    0.4126   -0.8877];
 x = [ 0.0070    0.2050    0.4660   -0.5627]; % energy = 0.0228, converged to infeasible point
 ctrl.T2 = x;
+extra=[tf ctrl.tf ctrl.T1];
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);

@@ -45,7 +45,11 @@ ctrl.tf = 0.25;                                  % control time points
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 bezier_pts=4;
 T1=[.5 .5 -.5 -.5];
+<<<<<<< HEAD
 T2=[0.0020 0.2088 0.4632 -0.5695];
+=======
+T2=[0.0020    0.2088    0.4632   -0.5695]; %[-0.0445 0.5 0.18 -0.9695];
+>>>>>>> f487d7cc1de6f68d9355261bb8e113a6c171e95b
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 extra=[tf ctrl.tf ctrl.T1];
@@ -67,7 +71,7 @@ problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
 
-problem.options=optimoptions('fmincon','ConstraintTolerance', .01);
+problem.options=optimoptions('fmincon','ConstraintTolerance', .05);
 % options = optimoptions('fmincon','Display','iter');
 
 x = fmincon(problem)                           % solve nonlinear programming problem
@@ -94,38 +98,3 @@ ctrl;
 
 %% Animate
 animate_system(arm, pk, contact_pts, p, tout);
-
-
-
-%% Plot COM for your submissions
-% figure(1)
-% COM = COM_jumping_leg(z,p);
-% size(COM);
-% plot(t,COM(2,:))
-% xlabel('time (s)')
-% ylabel('CoM Height (m)')
-% title('Center of Mass Trajectory')
-% 
-% figure(2)  % control input profile
-% ctrl_t = linspace(0, ctrl.tf, 50);
-% ctrl_pt_t = linspace(0, ctrl.tf, length(ctrl.T));
-% n = length(ctrl_t);
-% ctrl_input = zeros(1,n);
-% 
-% for i=1:n
-%     ctrl_input(i) = BezierCurve(x(3:end),ctrl_t(i)/ctrl.tf);
-% end
-% 
-% hold on
-% plot(ctrl_t, ctrl_input);
-% plot(ctrl_pt_t, x(3:end), 'o');
-% hold off
-% xlabel('time (s)')
-% ylabel('torque (Nm)')
-% title('Control Input Trajectory')
-% %%
-% % Run the animation
-% figure(3)                          % get the coordinates of the points to animate
-% speed = .25;                                 % set animation speed
-% clf                                         % clear fig
-% animate_simple(t,z,p,speed)                 % run animation

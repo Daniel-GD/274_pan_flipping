@@ -1,6 +1,6 @@
 function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
 % Takes in current state of arm-pancake system
-% Returns Generalized Forces [Fx Fy Tau] to apply to the pancake
+% Returns Generalized Forces u_pk=[Fx Fy Tau] to apply to the pancake
 % It might need to change velocity? Don't remember
 
 %Normal direction of the contact surface
