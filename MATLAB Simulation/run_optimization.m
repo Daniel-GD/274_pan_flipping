@@ -45,28 +45,31 @@ ctrl.tf = 0.25;                                  % control time points
 % ctrl.T2 = [.5 .5 -1];
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 bezier_pts=3;
-T1=[.5 .5 -.5];
+% T1=[.5 .5 -.5];
+T1=[.38 .38 -.5];
 % T2=[0.0020 0.2088 0.4632 -0.5695];
 % T2=[0.0020    0.2088    0.4632   -0.5695]; %[-0.0445 0.5 0.18 -0.9695];
-T2 = [0.1062 0.1918 -0.4769];
+% T2=[0.1062 0.1918 -0.4769];
+% T2=[-0.0393 0.4708 -0.1909];
+T2=[-0.049 0.61 -0.5];
+T2=[-0.0045 0.4853 -0.3837]; %objective function 0
+T2=[0.0401 0.4217 -0.4086]; %energy obj func
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
-extra=[tf ctrl.tf ctrl.T1];
-% x0 = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
-% x0 = x0(3:end);
-x0 = ctrl.T2;
+% extra=[tf ctrl.tf ctrl.T1];
+% x0 = ctrl.T2;
 % % setup and solve nonlinear programming problem
-% extra = [tf ctrl.tf];
-% x0 = [ctrl.T1 ctrl.T2];
+extra = [tf ctrl.tf];
+x0 = [ctrl.T1 ctrl.T2];
 
 problem.objective = @(x) objective(x,z0,p,dt,extra);     % create anonymous function that returns objective
 problem.nonlcon = @(x) constraints(x,z0,p,dt,extra);     % create anonymous function that returns nonlinear constraints
 % problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
 problem.x0 = x0;
-% problem.lb = [-2*ones(size(ctrl.T1)) -2*ones(size(ctrl.T2))];
-% problem.ub = [2*ones(size(ctrl.T1)) 2*ones(size(ctrl.T2))]
-problem.lb = [-2*ones(size(ctrl.T2))];
-problem.ub = [2*ones(size(ctrl.T2))];
+problem.lb = [-1*ones(size(ctrl.T1)) -1*ones(size(ctrl.T2))];
+problem.ub = [1*ones(size(ctrl.T1)) 1*ones(size(ctrl.T2))];
+% problem.lb = [-1*ones(size(ctrl.T2))];
+% problem.ub = [1*ones(size(ctrl.T2))];
 % problem.lb = [.1 .1 -bezier_pts*ones(size(ctrl.T1)) -bezier_pts*ones(size(ctrl.T2))];     % lower bound on decision variables
 % problem.ub = [1  1   bezier_pts*ones(size(ctrl.T1))  bezier_pts*ones(size(ctrl.T2))];     % upper bound on decision variables
 problem.Aineq = []; problem.bineq = [];         % no linear inequality constraints
@@ -74,7 +77,7 @@ problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
 
-problem.options=optimoptions('fmincon','ConstraintTolerance', .05);
+problem.options=optimoptions('fmincon','ConstraintTolerance', .05, 'Display', 'iter');
 % options = optimoptions('fmincon','Display','iter');
 
 x = fmincon(problem)                           % solve nonlinear programming problem
@@ -92,6 +95,7 @@ obj= objective(x,z0,p,dt,extra)
 % ctrl.T2=x(1+bezier_pts:end);
 ctrl.T1 = x(1:bezier_pts);
 ctrl.T2 = x(1+bezier_pts:end);
+% ctrl.T2 = x;
 ctrl;
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
