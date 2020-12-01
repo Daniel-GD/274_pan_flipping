@@ -23,18 +23,18 @@ function f = objective(x,z0,p,dt,extra)
     bezier_pts=4;
     tf=extra(1);
     ctrl.tf=extra(2);
-% %     ctrl.T1=x(1:bezier_pts); 
-% %     ctrl.T2=x(1+bezier_pts:end);    
+%     ctrl.T1=x(1:bezier_pts); 
+%     ctrl.T2=x(1+bezier_pts:end);    
     ctrl.T1 = extra(3:end);
     ctrl.T2 = x;
     
     % z0 is a struct with arm & pk
-    [arm, pk, contact_pts, tout, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
-    f = energy;
+%     [arm, pk, contact_pts, tout, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
+%     f = energy;
 %     valid_idx = tspan < ctrl.tf;
 %     u_pan = uout(1:2,1:sum(valid_idx)); % joint torques up until pancake leaves pan
 %     f = sum(sum(u_pan.^2)); % minimize T^2 integral
-%     f=0;
+    f=0;
     % alternate objective functions:
 %     f = tf;                                         % final time
 %     f = sum(uout.^2);                                         % minimize T^2 integral

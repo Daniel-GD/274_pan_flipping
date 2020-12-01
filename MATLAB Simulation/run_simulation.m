@@ -45,10 +45,12 @@ ctrl.T1=T1; ctrl.T2=T2; %ctrl.tf=tf/2;
 % ctrl.tf=x(2);
 % ctrl.T1=x(3:5); %BUG HERE
 % ctrl.T2=x(6:end);
-bezier_pts=4;
+% bezier_pts=4;
+bezier_pts=3;
 % x = [T1 T2];
 ctrl.tf=.25;
-ctrl.T1=[.5 .5 -.5 -.5];
+% ctrl.T1=[.5 .5 -.5 -.5];
+
 % ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
 % ctrl.T2=x(1+bezier_pts:end);
 x = [-0.0238    0.5936    0.4211   -0.7933];
@@ -61,6 +63,10 @@ x=[0.0070    0.2050    0.4660   -0.5627];
 x=[ 0.1062    0.1918    0.2082   -0.4769]; %solution w new torque law
 % x=[-0.0496    0.6421    0.4126   -0.8877];
 x = [ 0.0070    0.2050    0.4660   -0.5627]; % energy = 0.0228, converged to infeasible point
+
+ctrl.T1 = [.38 .38 -.8];
+% x = [-0.05    0.5   -0.2];
+x = [-0.049 0.48 -0.195];
 ctrl.T2 = x;
 extra=[tf ctrl.tf ctrl.T1];
 

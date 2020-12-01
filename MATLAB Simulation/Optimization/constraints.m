@@ -25,14 +25,14 @@ function [cineq, ceq] = constraints(x,z0,p,dt,extra)
     tol1=.01;
     % x = [tf, ctrl.tf, ctrl.T]; i added a dt to the x struc
     %run simulation
-    bezier_pts=4;
+    bezier_pts=3;
 %     tf=x(1);
 %     ctrl.tf=x(2);
 %     ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
 %     ctrl.T2=x(3+bezier_pts:end);
     tf=extra(1);
     ctrl.tf=extra(2);
-%     ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+%     ctrl.T1=x(1:bezier_pts); 
 %     ctrl.T2=x(1+bezier_pts:end);    
     ctrl.T1 = extra(3:end);
     ctrl.T2 = x;
