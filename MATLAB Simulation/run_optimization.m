@@ -45,7 +45,7 @@ ctrl.tf = 0.25;                                  % control time points
 % ctrl.T = [0 0 0];                               % guess for energy minimization
 bezier_pts=4;
 T1=[.5 .5 -.5 -.5];
-T2=[-0.0445 0.5 0.18 -0.9695];
+T2=[0.0020 0.2088 0.4632 -0.5695];
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 extra=[tf ctrl.tf ctrl.T1];

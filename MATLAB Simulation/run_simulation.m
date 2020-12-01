@@ -57,8 +57,9 @@ x=[-0.0445    0.6433    0.4351   -0.8695]; %Good initial guess for last system
 x=[-0.0445    0.5    0.18   -0.9695]; % 
 x=[0.0020    0.2088    0.4632   -0.5695];
 % x=[-0.0496    0.6421    0.4126   -0.8877];
+x = [ 0.0070    0.2050    0.4660   -0.5627]; % energy = 0.0228, converged to infeasible point
 ctrl.T2 = x;
 
 %% Run and animate simulation
-[arm, pk, contact_pts, tout, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
+[arm, pk, contact_pts, tspan, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
 animate_system(arm, pk, contact_pts, p, tspan);
