@@ -31,6 +31,7 @@ function f = objective(x,z0,p,dt,extra)
     % z0 is a struct with arm & pk
     [arm, pk, contact_pts, tout, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
     f = energy;
+%     f=0;
 %     valid_idx = tspan < ctrl.tf;
 %     u_pan = uout(1:2,1:sum(valid_idx)); % joint torques up until pancake leaves pan
 %     f = sum(sum(u_pan.^2)); % minimize T^2 integral

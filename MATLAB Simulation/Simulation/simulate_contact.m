@@ -1,4 +1,4 @@
-function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
+function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p, complex_contact)
 % Takes in current state of arm-pancake system
 % Returns Generalized Forces u_pk=[Fx Fy Tau] to apply to the pancake
 % It might need to change velocity? Don't remember
@@ -12,8 +12,13 @@ function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
 Fx=0;
 Fy=0;
 Tau=0;
+if complex_contact
+    [u_pk, p_contact] = discrete_impact_contact_edges(z_arm,z_pk,p, 10000, 20);
+else
+    [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, 1000, 20);
+end
 % [u_pk, p_contact] = discrete_impact_contact_edges(z_arm,z_pk,p, 10000, 20);
-[u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, 1000, 20);
+% [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, 1000, 20);
 end
 
 function t=get_t(x,x0,xf)  %Inverse linear interpolation
