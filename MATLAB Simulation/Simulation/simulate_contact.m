@@ -1,6 +1,6 @@
 function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
 % Takes in current state of arm-pancake system
-% Returns Generalized Forces [Fx Fy Tau] to apply to the pancake
+% Returns Generalized Forces u_pk=[Fx Fy Tau] to apply to the pancake
 % It might need to change velocity? Don't remember
 
 %Normal direction of the contact surface
@@ -12,32 +12,8 @@ function [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p)
 Fx=0;
 Fy=0;
 Tau=0;
+% [u_pk, p_contact] = discrete_impact_contact_edges(z_arm,z_pk,p, 10000, 20);
 [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, 1000, 20);
-end
-
-function [p_intersection]= find_intersection(z_arm,z_pk, p)
-%FK
-arm_keypoints= keypoints_arm(z_arm,p.arm);
-pk_keypoints= keypoints_pancake(z_pk,p.pk);
-%Get arm keypoints
-rc1 = arm_keypoints(:,1); % position vector to the CoM of link 1
-rB = arm_keypoints(:,2); %position vector to point B
-rc2 = arm_keypoints(:,3); % position vector to the CoM of link 2
-rC = arm_keypoints(:,4); %position vector to point C
-
-%Get pancake keypoints 
-rc_pk = pk_keypoints(:,1); % position vector to the CoM of pancake
-rA_pk = pk_keypoints(:,2); %position vector to point A in pancake
-rB_pk = pk_keypoints(:,3); % position vector to point B in pancake
-
-x_pan=[rB(1) rC(1)];
-y_pan=[rB(2) rC(2)];
-x_pk=[rA_pk(1) rB_pk(1)];
-y_pk=[rA_pk(2) rB_pk(2)];
-
-[xi,yi] = polyxpoly(x_pan,y_pan,x_pk,y_pk);
-
-p_intersection=[xi; yi];
 end
 
 function t=get_t(x,x0,xf)  %Inverse linear interpolation
@@ -47,18 +23,18 @@ function t=get_t(x,x0,xf)  %Inverse linear interpolation
     end 
 end
 
-function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, fric_coeff)
+function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, K_c, fric_coeff)
     p_contact=NaN(1,4);
-    K_c=100; %10000;
+%     K_c=1000; %10000;
     D_c=20; %.8;
     tau_k=1;
+    
     %Get keypoints
     pan_position= get_pan_position(z_arm,p.arm);
-    
     pk_position= get_pancake_position(z_pk,p.pk);
     pk_keypoints= keypoints_pancake(z_pk,p.pk);
-    rA=pk_position(:,1);
     
+    rA=pk_position(:,1);
     rB=pk_position(:,2);
     rC=pk_keypoints(:,1);
     
@@ -107,6 +83,108 @@ function [u_pk, p_contact] = discrete_impact_contact(z_arm,z_pk,p, rest_coeff, f
                 p_contact(3:4)=pB;
                 FcB=-K_c*CB-D_c*CB_dot; %Apply a force at that point
             end
+        end
+    end
+    FB=FcB*e2hat;   
+    tauB=cross([(rB-rC); 0],[FB; 0]);
+   
+    %Add Forces
+    F=FA+FB;
+    tau=tau_k*(tauA(3)+tauB(3));
+
+    u_pk=[F(1); F(2); tau];
+end
+
+function [u_pk, p_contact] = discrete_impact_contact_edges(z_arm,z_pk,p, K_c, fric_coeff)
+    p_contact=NaN(1,4);
+%     K_c=100; %10000;
+    D_c=20; %.8;
+    tau_k=1;
+    
+    %Get keypoints
+    pan_position= get_pan_position(z_arm,p.arm);
+    pk_position= get_pancake_position(z_pk,p.pk);
+    pk_keypoints= keypoints_pancake(z_pk,p.pk);
+    
+    rA=pk_position(:,1);
+    rB=pk_position(:,2);
+    rC=pk_keypoints(:,1);
+    
+    %Get keypoint velocities
+    pk_velocity= get_pancake_velocity(z_pk,p.pk);
+    drA=pk_velocity(:,1);
+    drB=pk_velocity(:,2);
+    
+    %Get Vectors
+    e2hat=pan_normal(z_arm,p.arm);
+    e1hat=pan_parallel(z_arm,p.arm); %parallel to pan
+    e_pk=pk_parallel(z_pk,p.pk);
+    
+    %Get Projected Points
+    pA=rA-dot(rA-pan_position(:,1),e2hat)*e2hat;
+    pB=rB-dot(rB-pan_position(:,1),e2hat)*e2hat;
+    
+    %Get intersection velocities
+    tA=get_t(pA,pan_position(:,1),pan_position(:,2));
+    dpA=pan_velocity_interpolation(z_arm,p.arm,tA);
+    tB=get_t(pB,pan_position(:,1),pan_position(:,2));
+    dpB=pan_velocity_interpolation(z_arm,p.arm,tB);
+    
+    %First Constraint
+    if tA>=0 && tA<=1
+        %You know what to do
+    elseif tA<0 && tB>=0
+        %rA is over left edge of pan
+        tA=0;
+        pA=pan_position(:,1);
+        dpA=pan_velocity_interpolation(z_arm,p.arm,tA);
+    elseif tA>1 && tB<=1
+        %rA is over right edge of pan
+        tA=1;
+        pA=pan_position(:,2);
+        dpA=pan_velocity_interpolation(z_arm,p.arm,tA);
+    else
+        rA(:)=0;
+        pA(:)=0;
+    end
+
+    FcA=0;
+    CA=dot(rA-pA,e2hat);
+    CA_dot=dot(drA-dpA,e2hat);
+    if CA<0 %penetrating
+        if CA>-.08 %Pancake already left the pan and is just align w pan
+            p_contact(1:2)=pA;
+            FcA=-K_c*CA-D_c*CA_dot; %Apply a force at that point
+        end
+    end
+    FA=FcA*e2hat;
+    tauA=cross([(rA-rC); 0],[FA; 0]);
+
+    %Second Constraint
+    if tB>=0 && tB<=1
+        %You know what to do
+    elseif tB<0 && tA>=0
+        %rB is over left edge of pan
+        tB=0;
+        pB=pan_position(:,1);
+        dpB=pan_velocity_interpolation(z_arm,p.arm,tB);
+    elseif tB>1 && tA<=1
+        %rB is over right edge of pan
+        tB=1;
+        pB=pan_position(:,2);
+        dpB=pan_velocity_interpolation(z_arm,p.arm,tB);
+    else
+        rB(:)=0;
+        pB(:)=0;
+    end
+
+    FcB=0;
+    CB=dot(rB-pB,e2hat);
+    CB_dot=dot(drB-dpB,e2hat);
+    if CB<0 %penetrating
+        if CB>-.08 %Pancake already left the pan and is just align w pan
+            p_contact(3:4)=pB;
+            FcB=-K_c*CB-D_c*CB_dot; %Apply a force at that point
         end
     end
     FB=FcB*e2hat;   

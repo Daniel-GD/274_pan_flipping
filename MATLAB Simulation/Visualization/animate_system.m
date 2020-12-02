@@ -9,8 +9,9 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     figure; clf;
     % Prepare arm plot handles
     hold on
-    h_link1 = plot([0],[0],'b','LineWidth',5);
-    h_link2 = plot([0],[0],'b','LineWidth',5);
+    h_link1 = plot([0],[0],'b','LineWidth',10);
+    h_link2 = plot([0],[0],'b','LineWidth',7);
+    h_pan = plot([0],[0],'k','LineWidth',5);
     h_B_mark = plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','black');
     h_c1_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
     h_c2_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
@@ -27,8 +28,9 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     h_title = title('t=0.0s');
     
     axis equal
-    axis([-.2 .2 -.2 .2]);
-    skip_frame = 500;
+    axis([-.1 .3 -.2 .2]);
+    skip_frame = 150;
+    skip_frame = 80;
     
     %Step through and update animation
     for i=1:numel(tspan)
@@ -44,10 +46,12 @@ function animate_system(arm, pk, contact_pts, p, tspan)
         pk_keypoints = keypoints_pancake(z_pk,p_pk);
         
         %Get arm keypoints
+        
         rc1 = arm_keypoints(:,1); % position vector to the CoM of link 1
         rB = arm_keypoints(:,2); %position vector to point B
         rc2 = arm_keypoints(:,3); % position vector to the CoM of link 2
-        rC = arm_keypoints(:,4); %position vector to point C
+        rpA = arm_keypoints(:,4); %position vector to point C
+        rC = arm_keypoints(:,5); %position vector to point C
         
         %Get pancake keypoints 
         rc_pk = pk_keypoints(:,1); % position vector to the CoM of pancake
@@ -59,8 +63,11 @@ function animate_system(arm, pk, contact_pts, p, tspan)
         set(h_link1,'XData',[0; rB(1)]);
         set(h_link1,'YData',[0; rB(2)]);
         
-        set(h_link2,'XData',[rB(1); rC(1)]);
-        set(h_link2,'YData',[rB(2); rC(2)]);
+        set(h_link2,'XData',[rB(1); rpA(1)]);
+        set(h_link2,'YData',[rB(2); rpA(2)]);
+        
+        set(h_pan,'XData',[rpA(1); rC(1)]);
+        set(h_pan,'YData',[rpA(2); rC(2)]);
         
         set(h_B_mark,'XData',[rB(1)]);
         set(h_B_mark,'YData',[rB(2)]);

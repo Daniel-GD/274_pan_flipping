@@ -58,15 +58,19 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, shoulder
     clf
     hold on
     axis equal
-    axis([-.2 .1 -.2 .075]);
-   
+    axis([-.3 .1 -.3 .15]);
+    title('Flip Trajectory')
 %     yline(0)
     h_BC = plot([0],[0],'LineWidth',2);
     h_AB = plot([0],[0],'b-','LineWidth',5);
     h_BC = plot([0],[0],'b-','LineWidth',3);
     h_c1 = plot([0],[0],'ro','MarkerSize',7);
     h_c2 = plot([0],[0],'ro','MarkerSize',5);
-    
+    h_AB = plot([0],[0],'r','LineWidth',5);
+    h_BC = plot([0],[0],'r','LineWidth',5);
+    h_pan = plot([0],[0],'k','LineWidth',6);
+    h_c1 = plot([0],[0],'ro','MarkerSize',6);
+    h_c2 = plot([0],[0],'ro','MarkerSize',6);
     h_foot= plot([0],[0],'k');
 %     h_des = plot([0],[0],'k--');
 %     h_des.XData=[];
@@ -135,10 +139,12 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, shoulder
         rc1 = keypoints(:,1); 
         rB = keypoints(:,2);
         rc2 = keypoints(:,3);
-        rC = keypoints(:,4);
+        rpA = keypoints(:,4);
+        rC = keypoints(:,5);
         
         set(h_AB,'XData',[0 rB(1)],'YData',[0 rB(2)]);
         set(h_BC,'XData',[rB(1) rC(1)],'YData',[rB(2) rC(2)]);
+        set(h_pan,'XData',[rpA(1) rC(1)],'YData',[rpA(2) rC(2)]);
         set(h_c1,'XData',[rc1(1)],'YData',[rc1(2)]);
         set(h_c2,'XData',[rc2(1)],'YData',[rc2(2)]);
         

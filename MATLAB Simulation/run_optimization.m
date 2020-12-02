@@ -13,10 +13,10 @@ p=parameters();
 
 % Arm Initial Conditions
 th1_0 = pi/4; %+.1;
-th2_0 = pi/6;%-pi/6;
+% th2_0 = pi/4;%-pi/6;
+th2_0 = -th1_0+pi/2;
 dth1_0=0; %pi/2;
 dth2_0=0 ;%2*pi;%2*pi;
-
 z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 
 % Pancake Initial Conditions
@@ -38,37 +38,61 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 
 % set guess
 % tf = .5;                                        % simulation final time
-tf = 0;                                        % guess for time minimization
-dt = 0.0001;                                    % time step
-ctrl.tf = 0.35;                                  % control time points
-ctrl.T1 = [.5 .5 -1];                             % control values
-ctrl.T2 = [.5 .5 -1];
+tf = .5;                                        % guess for time minimization
+dt = 0.00001;                                    % time step
+ctrl.tf = 0.25;                                  % control time points
+% ctrl.T1 = [.5 .5 -1];                             % control values
+% ctrl.T2 = [.5 .5 -1];
 % ctrl.T = [0 0 0];                               % guess for energy minimization
+bezier_pts=3;
+T1=[.5 .5 -.5];
+% T2=[0.0020 0.2088 0.4632 -0.5695];
+% T2=[0.0020    0.2088    0.4632   -0.5695]; %[-0.0445 0.5 0.18 -0.9695];
+T2 = [0.1062 0.1918 -0.4769];
+ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
-x = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
+extra=[tf ctrl.tf ctrl.T1];
+% x0 = [tf, ctrl.tf, ctrl.T1, ctrl.T2];
+% x0 = x0(3:end);
+x0 = ctrl.T2;
 % % setup and solve nonlinear programming problem
-problem.objective = @(x) objective(x,z0,p);     % create anonymous function that returns objective
-problem.nonlcon = @(x) constraints(x,z0,p,dt);     % create anonymous function that returns nonlinear constraints
-problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
+% extra = [tf ctrl.tf];
+% x0 = [ctrl.T1 ctrl.T2];
 
-% does this change? I added a ctrl.T2 which controls the second motor
-problem.lb = [.1 .1 -3*ones(size(ctrl.T1)) -3*ones(size(ctrl.T2))];     % lower bound on decision variables
-problem.ub = [1  1   3*ones(size(ctrl.T1))  3*ones(size(ctrl.T2))];     % upper bound on decision variables
+problem.objective = @(x) objective(x,z0,p,dt,extra);     % create anonymous function that returns objective
+problem.nonlcon = @(x) constraints(x,z0,p,dt,extra);     % create anonymous function that returns nonlinear constraints
+% problem.x0 = [tf ctrl.tf ctrl.T1 ctrl.T2];                   % initial guess for decision variables
+problem.x0 = x0;
+% problem.lb = [-2*ones(size(ctrl.T1)) -2*ones(size(ctrl.T2))];
+% problem.ub = [2*ones(size(ctrl.T1)) 2*ones(size(ctrl.T2))]
+problem.lb = [-2*ones(size(ctrl.T2))];
+problem.ub = [2*ones(size(ctrl.T2))];
+% problem.lb = [.1 .1 -bezier_pts*ones(size(ctrl.T1)) -bezier_pts*ones(size(ctrl.T2))];     % lower bound on decision variables
+% problem.ub = [1  1   bezier_pts*ones(size(ctrl.T1))  bezier_pts*ones(size(ctrl.T2))];     % upper bound on decision variables
 problem.Aineq = []; problem.bineq = [];         % no linear inequality constraints
 problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
+
+problem.options=optimoptions('fmincon','ConstraintTolerance', .05);
+% options = optimoptions('fmincon','Display','iter');
+
 x = fmincon(problem)                           % solve nonlinear programming problem
 
-obj= objective(x,z0,p)
+obj= objective(x,z0,p,dt,extra)
 
 % Note that once you've solved the optimization problem, you'll need to 
 % re-define tf, tfc, and ctrl here to reflect your solution.
-tf=x(1);
-ctrl.tf=x(2);
-ctrl.T1=x(3:6);
-ctrl.T2=x(6:end);
-ctrl
+% tf=x(1);
+% ctrl.tf=x(2);
+% ctrl.T1=x(3:3+bezier_pts-1); %BUG HERE
+% ctrl.T2=x(3+bezier_pts:end);
+
+% ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
+% ctrl.T2=x(1+bezier_pts:end);
+ctrl.T1 = x(1:bezier_pts);
+ctrl.T2 = x(1+bezier_pts:end);
+ctrl;
 
 % [t, z, u, indices] = hybrid_simulation(z0,ctrl,p,[0 tf]); % run simulation
 [arm, pk, contact_pts, tout, uout]=simulate_system(z0, p, ctrl, tf, dt);
@@ -78,38 +102,3 @@ ctrl
 
 %% Animate
 animate_system(arm, pk, contact_pts, p, tout);
-
-
-
-%% Plot COM for your submissions
-% figure(1)
-% COM = COM_jumping_leg(z,p);
-% size(COM);
-% plot(t,COM(2,:))
-% xlabel('time (s)')
-% ylabel('CoM Height (m)')
-% title('Center of Mass Trajectory')
-% 
-% figure(2)  % control input profile
-% ctrl_t = linspace(0, ctrl.tf, 50);
-% ctrl_pt_t = linspace(0, ctrl.tf, length(ctrl.T));
-% n = length(ctrl_t);
-% ctrl_input = zeros(1,n);
-% 
-% for i=1:n
-%     ctrl_input(i) = BezierCurve(x(3:end),ctrl_t(i)/ctrl.tf);
-% end
-% 
-% hold on
-% plot(ctrl_t, ctrl_input);
-% plot(ctrl_pt_t, x(3:end), 'o');
-% hold off
-% xlabel('time (s)')
-% ylabel('torque (Nm)')
-% title('Control Input Trajectory')
-% %%
-% % Run the animation
-% figure(3)                          % get the coordinates of the points to animate
-% speed = .25;                                 % set animation speed
-% clf                                         % clear fig
-% animate_simple(t,z,p,speed)                 % run animation
