@@ -31,6 +31,7 @@ left_pan=false;
 contact=false;
 last_contact=false;
 iphase_list = 1;
+complex_contact=false;
 % z_out = zeros(4,num_steps);
 % z_out(:,1) = z0;
 for i=1:num_steps-1
@@ -47,7 +48,7 @@ for i=1:num_steps-1
     %Check collision (CONTACT MODELING) Calculate Fx, Fy and Tau
 %     u_pk=[0;0;0];
 %     if sum(z_arm(1:2))<pi/2 +.01
-    [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p);
+    [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p,complex_contact);
     
     if sum(isnan(p_contact))==4
         contact=false;
@@ -65,8 +66,12 @@ for i=1:num_steps-1
 %             left_pan=true;
 %             tout(i)
 %         end
+%     else
+%         complex_contact=true;
     end
-    
+    if tout(i)>ctrl.tf
+        complex_contact=true;
+    end
 %     end
     %%%%% LAURA %%%%%
     
@@ -111,6 +116,7 @@ function u = control_laws(t,z,p,ctrl,state,z_pk)
         %should convert that to desired th1 and th2 should be calculated
         %based on that
         k1 = 20;  k2 = 20;                % stiffness (N/rad)
+        k1 = 15;  k2 = 15;                % stiffness (N/rad)
         p_arm=p.arm;
         l1=p_arm(3);
         c=p_arm(end)+(p_arm(4)-p_arm(end))/2+.03; %I have no idea why .03 works

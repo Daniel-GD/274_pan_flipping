@@ -16,7 +16,7 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     h_c1_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
     h_c2_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
     % Prepare pancake plot handle
-    h_pk_line = plot([0],[0],'b','LineWidth',5);
+    h_pk_line = plot([0],[0],'b','LineWidth',4);
     h_pk_line.Color=[181 101 30]./255;
     h_pk_com =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','black');
     
@@ -29,8 +29,10 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     
     axis equal
     axis([-.1 .3 -.2 .2]);
-    skip_frame = 150;
     skip_frame = 80;
+    skip_frame = 150;
+%     skip_frame = 300; %somewhat real time
+%     skip_frame = 80;
     
     %Step through and update animation
     for i=1:numel(tspan)

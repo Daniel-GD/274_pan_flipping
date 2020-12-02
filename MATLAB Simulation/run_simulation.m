@@ -64,11 +64,23 @@ x=[ 0.1062    0.1918    0.2082   -0.4769]; %solution w new torque law
 % x=[-0.0496    0.6421    0.4126   -0.8877];
 x = [ 0.0070    0.2050    0.4660   -0.5627]; % energy = 0.0228, converged to infeasible point
 
-ctrl.T1 = [.38 .38 -.8];
+ctrl.T1 = [.38 .38 -.5];
 % x = [-0.05    0.5   -0.2];
-x = [-0.049 0.48 -0.195];
+x = [-0.049 0.61 -0.5];
+% x = [-0.0393    0.4708   -0.1909]; % no objective function
+% x = [-0.0705    0.3681   -0.0237]; % energy obj function for th1_0 = pi/4, dt = 0.001
+
+% ctrl.T1=-3*[.07 .45 -.25];
+% x=-[-.3 .55 0];
+
+x = [0.0401    0.4217   -0.4086]; % minimize energy = 0.0153, T1 fixed
 ctrl.T2 = x;
 extra=[tf ctrl.tf ctrl.T1];
+
+% optimizating both torque values
+% th1_0 = pi/4, erergy = 0.0130
+ctrl.T1 = [0.3440    0.3737   -0.4953]; 
+ctrl.T2 = [0.0555    0.3786   -0.4141];
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);

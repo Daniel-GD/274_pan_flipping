@@ -1,5 +1,6 @@
 name = 'arm';
 
+
 % Define variables for time, generalized coordinates + derivatives, controls, and parameters 
 syms t x dx ddx th1 dth1 ddth1 th2 dth2 ddth2 c1 c2 pA pan_length l1 l2 m1 m2 I1 I2 Ir1 Ir2 N1 N2 k kappa l0 th1_0 th2_0 g F tau1 tau2 t_param real
 
@@ -74,18 +75,26 @@ g = ddt(jacobian(L,dq).') - jacobian(L,q).' - Q;
 
 
 % Rearrange Equations of Motion
-A = jacobian(g,ddq);
+A = jacobian(g,ddq)
+A(1,1)
+A(1,2)
+A(2,1)
+A(2,2)
 b = A*ddq - g;
 
 J=jacobian(rC,q);
+J=J(1:2,:);
 [rB(1:2) rC(1:2) rc2(1:2)];
 pan_position=[rpA(1:2) rC(1:2) rpcom(1:2)];
 
+%Operational Space Mass Matrix moment inertia
+
 % Write Energy Function and Equations of Motion
 z  = [q ; dq];
-directory = '../../AutoDerived/Arm/';
+directory = 'AutoDerived/Arm/';
 matlabFunction(A,'file',[directory 'A_' name],'vars',{z p});
 matlabFunction(b,'file',[directory 'b_' name],'vars',{z u p});
+matlabFunction(J,'file',[directory 'J_' name],'vars',{z p});
 matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
 matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
 matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});
