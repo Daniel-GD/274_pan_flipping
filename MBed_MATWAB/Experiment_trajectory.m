@@ -61,7 +61,6 @@ function output_data = Experiment_trajectory( angle1_init, angle2_init, shoulder
     axis([-.3 .1 -.3 .15]);
     title('Flip Trajectory')
 %     yline(0)
-    h_BC = plot([0],[0],'LineWidth',2);
     h_AB = plot([0],[0],'b-','LineWidth',5);
     h_BC = plot([0],[0],'b-','LineWidth',3);
     h_c1 = plot([0],[0],'ro','MarkerSize',7);
