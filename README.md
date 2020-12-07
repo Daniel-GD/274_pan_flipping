@@ -1,5 +1,5 @@
 # 274_pan_flipping
-Repository to hold all the MATLAB code for team 1's 2.74 final project  
+Repository to hold all the MATLAB code for team 1's 2.74 Fall 2020 final project  
   
 ![alt text](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/standard_flip.gif "Simulation1") 
   
