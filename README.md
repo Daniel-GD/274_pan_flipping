@@ -2,6 +2,8 @@
 Repository to hold all the MATLAB code for team 1's 2.74 Fall 2020 final project  
   
 ![alt text](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/standard_flip.gif "Simulation1") 
+See our project poster:
+[Intro.pdf](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/team1_poster.pdf).
   
 ## MDEB Details ##
 MBED Link: https://os.mbed.com/users/suribe/code/pan_flipping/
