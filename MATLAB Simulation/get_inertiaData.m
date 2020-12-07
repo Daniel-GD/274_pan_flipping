@@ -11,6 +11,7 @@ dth2_0=0 ;%2*pi;%2*pi;
 
 z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 
+
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration

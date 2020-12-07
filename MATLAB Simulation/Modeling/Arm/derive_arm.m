@@ -84,6 +84,8 @@ b = A*ddq - g;
 
 J=jacobian(rC,q);
 J=J(1:2,:);
+J_pan=jacobian(rpcom,q);
+J_pan=J_pan(1:2,:)
 [rB(1:2) rC(1:2) rc2(1:2)];
 pan_position=[rpA(1:2) rC(1:2) rpcom(1:2)];
 
@@ -95,6 +97,7 @@ directory = 'AutoDerived/Arm/';
 matlabFunction(A,'file',[directory 'A_' name],'vars',{z p});
 matlabFunction(b,'file',[directory 'b_' name],'vars',{z u p});
 matlabFunction(J,'file',[directory 'J_' name],'vars',{z p});
+matlabFunction(J_pan,'file',[directory 'J_pan_' name],'vars',{z p});
 matlabFunction(E,'file',[directory 'energy_' name],'vars',{z p});
 matlabFunction(T,'file',[directory 'kinetic_energy_' name],'vars',{z p});
 matlabFunction(V,'file',[directory 'potential_energy_' name],'vars',{z p});

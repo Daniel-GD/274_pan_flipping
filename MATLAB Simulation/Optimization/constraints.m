@@ -49,8 +49,8 @@ function [cineq, ceq] = constraints(x,z0,p,dt,extra)
     % multiple of 180?
     pk_th0=z0.pk(3);
     pk_thf=z_out_pk(3,end);
-    delta_th=-(pk_thf-pk_th0);
-    delta_th=abs(pk_thf-pk_th0);
+    delta_th=(pk_thf-pk_th0);
+%     delta_th=abs(pk_thf-pk_th0);
     cineq_flip = pi-delta_th;
     
     cineq_flip_too_much = delta_th-2*pi;
@@ -68,9 +68,14 @@ function [cineq, ceq] = constraints(x,z0,p,dt,extra)
     
     cineq =[cineq_flip cineq_flip_too_much cineq_fall_left cineq_fall_right];
     cineq= [cineq_fall_left cineq_fall_right];
+    cineq= [cineq_fall_left cineq_fall_right cineq_flip];
 %     cineq =[cineq_flip  cineq_fall_side];
     
-    ceq=[delta_th-pi];
+%     ceq=[delta_th-pi];
+    ceq=[];
+    
+    
+    
     %Rightmost point of pancake < rightmost point of pan
     % get pan rightmost position
 %     arm_kpts = keypoints_arm(z0.arm,p.arm);

@@ -116,7 +116,7 @@ function u = control_laws(t,z,p,ctrl,state,z_pk)
         %should convert that to desired th1 and th2 should be calculated
         %based on that
         k1 = 20;  k2 = 20;                % stiffness (N/rad)
-        k1 = 15;  k2 = 15;                % stiffness (N/rad)
+%         k1 = 15;  k2 = 15;                % stiffness (N/rad)
         p_arm=p.arm;
         l1=p_arm(3);
         c=p_arm(end)+(p_arm(4)-p_arm(end))/2+.03; %I have no idea why .03 works

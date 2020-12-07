@@ -12,7 +12,7 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     h_link1 = plot([0],[0],'b','LineWidth',10);
     h_link2 = plot([0],[0],'b','LineWidth',7);
     h_pan = plot([0],[0],'k','LineWidth',5);
-    h_B_mark = plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','black');
+    h_B_mark = plot([0],[0],'.', 'MarkerSize' ,30,'MarkerEdgeColor','black');
     h_c1_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
     h_c2_mark = plot([0],[0],'.', 'MarkerSize' ,15,'MarkerEdgeColor','red');
     % Prepare pancake plot handle
@@ -23,13 +23,14 @@ function animate_system(arm, pk, contact_pts, p, tspan)
     % Prepare contact plot handles
     h_contact1 =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
     h_contact2 =plot([0],[0],'.', 'MarkerSize' ,20,'MarkerEdgeColor','red');
+    plot(0,0,'.', 'MarkerSize' ,35,'MarkerEdgeColor','black');
     xlabel('x')
     ylabel('y');
     h_title = title('t=0.0s');
     
     axis equal
     axis([-.1 .3 -.2 .2]);
-    skip_frame = 80;
+    skip_frame = 60;
     skip_frame = 150;
 %     skip_frame = 300; %somewhat real time
 %     skip_frame = 80;

@@ -4,8 +4,8 @@ setpath
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = pi/4; %+.1;
-th2_0 = pi/4;%-pi/6;
+th1_0 = pi/4;%-pi/4; %+.1;
+th2_0 = -th1_0+pi/2;%-pi/6;
 dth1_0=0; %pi/2;
 dth2_0=0 ;%2*pi;%2*pi;
 
@@ -76,12 +76,37 @@ x = [-0.049 0.61 -0.5];
 x = [0.0401    0.4217   -0.4086]; % minimize energy = 0.0153, T1 fixed
 ctrl.T2 = x;
 extra=[tf ctrl.tf ctrl.T1];
-
 % optimizating both torque values
 % th1_0 = pi/4, erergy = 0.0130
-ctrl.T1 = [0.3440    0.3737   -0.4953]; 
+% ctrl.T1 = [0.3440    0.3737   -0.4953]; 
+% ctrl.T2 = [0.0555    0.3786   -0.4141];
+%
+% ctrl.T1 = [0.3440    0.3737   -0.4953]; 
+% ctrl.T1=[.3 .3 -.4];
+% ctrl.T2 = [.5    .8   -0.71];
+ctrl.T1=[0.3440    0.3737   -0.4953]; %pi/4 optimization
 ctrl.T2 = [0.0555    0.3786   -0.4141];
+ctrl.T2 = [0.0555    0.39   -0.4141];
+x=[ctrl.T1 ctrl.T2];
+
+% x=[-.0440    0.3737   -0.6953 0.4  -.6  -.8]; %initial guess for pi/8
+% x=[-0.0445    0.3646   -0.6857    0.4900   -0.5412   -0.7752];
+% x=[0.0344    0.3055   -0.4027    0.4197   -0.4103   -0.4306]; %optimal for pi/8 .0052
+% x=[-0.0445    0.3646   -0.6857    0.4900   -0.5412   -0.7752]; %optimal for pi/8 .0057 new one that works
+% x=[-0.0241    0.2376   -0.5760    0.3430   -0.1265   -0.5559]; %optimal for pi/8 .0037 
+% x=[0.9968    0.5230   -0.3528    0.0021    0.5254   -0.2603];
+% x=[0.2259    0.3167   -0.5044    0.0729    0.3438   -0.4326]; %pi/2
+% optimized for both torques( 0.0057 energy)
+% x=[0.2259    0.3167   -0.5044    0.0929    0.4   -0.926];
+% x=[0.1930    0.3028   -0.5057    0.0915    0.4028   -0.9181]; %3*pi/8 optimized for both torques
+% x=[0.1259    0.2560   -0.5128    0.1028    0.3722   -0.8829]; %pi/2
+% optimized with 3*pi/8 initial guess (.036 energy)
+
+% x=[-0.0197    0.1121   -0.1579    0.2445750   -0.0741   -0.3151]; %HAD TO CHANGE OPTIMIZED TORQUE
+ctrl.T1=x(1:bezier_pts); 
+ctrl.T2=x(1+bezier_pts:end);   
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
+energy
 animate_system(arm, pk, contact_pts, p, tspan);

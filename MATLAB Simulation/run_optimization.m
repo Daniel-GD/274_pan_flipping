@@ -12,7 +12,7 @@ setpath                                     % add AutoDerived, Modeling, and Vis
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = pi/4; %+.1;
+th1_0 = pi/3;%3*pi/8; %+.1;
 % th2_0 = pi/4;%-pi/6;
 th2_0 = -th1_0+pi/2;
 dth1_0=0; %pi/2;
@@ -54,6 +54,34 @@ T1=[.38 .38 -.5];
 T2=[-0.049 0.61 -0.5];
 T2=[-0.0045 0.4853 -0.3837]; %objective function 0
 T2=[0.0401 0.4217 -0.4086]; %energy obj func
+
+T1=[0.3440    0.3737   -0.4953];
+T2=[0.0555    0.3786   -0.4141];
+
+
+%3*pi/8
+% x=[0.2259    0.3167   -0.5044    0.0929    0.4   -0.926];
+T1=[0.2259    0.3167   -0.5044];
+T2=[0.0929    0.4   -0.926];
+
+%3*pi/8 again w solution from optimization and new contact
+x=[0.1930    0.3028   -0.5057    0.0915    0.4028   -0.9181]; 
+T1=[0.1930    0.3028   -0.5057 ];
+T2=[ 0.0915    0.4028   -0.9181];
+
+%pi/2 again w results from 3/8*pi
+% T1=[0.1930    0.3028   -0.5057];
+% T2=[0.0915    0.4028   -0.9181];
+
+%pi/8 w initial guess manual
+T1=[-.0440    0.3737   -0.6953];
+T2=[0.4  -.6  -.8]; 
+
+%pi/3
+x=[0.3440    0.3737   -0.4953  0.0555    0.4   -0.4141];
+T1=[0.3440    0.3737   -0.4953];
+T2=[0.0555    0.4   -0.4141]; 
+
 ctrl.T1=T1; ctrl.T2=T2; ctrl.tf=tf/2;
 
 % extra=[tf ctrl.tf ctrl.T1];
@@ -77,7 +105,7 @@ problem.Aeq = []; problem.beq = [];             % no linear equality constraints
 problem.options = optimset('Display','iter');   % set options
 problem.solver = 'fmincon';                     % required
 
-problem.options=optimoptions('fmincon','ConstraintTolerance', .05, 'Display', 'iter');
+problem.options=optimoptions('fmincon','ConstraintTolerance', .065, 'Display', 'iter');
 % options = optimoptions('fmincon','Display','iter');
 
 x = fmincon(problem)                           % solve nonlinear programming problem
