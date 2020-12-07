@@ -23,14 +23,6 @@ Need to run setpath before running any file
 * Misc -> Random calculations and tests
 * run_simulation -> Parameters are defined here. Running this file will run the hybrid simulation and animate it
 
-## Still need to implement: ##
-- [X] Contact Modeling between pan and pancake. (Implement simulate_contact.m)
-- [ ] Add 3rd degree of freedom to arm 
-- [ ] Add spring to arm
-- [ ] Create optimzation code template
-- [ ] MBED Side
-- [ ] Getting inertias and motor constants
-
  ## Authors ##
  Daniel Gonzalez Diaz  
  Laura Huang  
