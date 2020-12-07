@@ -1,6 +1,6 @@
 # 274_pan_flipping
 Repository to hold all the MATLAB code for team 1's 2.74 final project  
-![](Presesentation_Visuals/0.gif)
+![alt text](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/0.gif "Logo Title Text 1")
 ## MDEB Details ##
 MBED Link: https://os.mbed.com/users/suribe/code/pan_flipping/
 How to update:
