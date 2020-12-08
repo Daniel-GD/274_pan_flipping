@@ -1,5 +1,5 @@
 # 274_pan_flipping
-Repository to hold all the MATLAB Simulation and Hardware Interface code for team 1's 2.74 Fall 2020 final project  
+Repository to hold all the MATLAB Simulation and Hardware Interface code fot MIT's 2.74 "Bio-inspired Robotics" Fall 2020 course final project  
 
 <img src="/Presentation_Visuals/standard_flip.gif" width="400" height="400"/> <img src="/Presentation_Visuals/hardware_flip1.gif" width="400" height="400"/> <br/>
 
