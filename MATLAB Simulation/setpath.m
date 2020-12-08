@@ -8,7 +8,7 @@
 addpath([pwd '/Modeling'])
 addpath([pwd '/Modeling/Arm'])
 addpath([pwd '/Modeling/Pancake'])
-% addpath([pwd '/Visualization'])
+
 addpath([pwd '/AutoDerived'])
 addpath([pwd '/AutoDerived/Arm'])
 addpath([pwd '/AutoDerived/Pancake'])
