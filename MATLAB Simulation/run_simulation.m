@@ -4,17 +4,17 @@ setpath
 p=parameters();
 
 % Arm Initial Conditions
-th1_0 = pi/4;%-pi/4; %+.1;
-th2_0 = -th1_0+pi/2;%-pi/6;
-dth1_0=0; %pi/2;
-dth2_0=0 ;%2*pi;%2*pi;
+th1_0 = pi/4;
+th2_0 = -th1_0+pi/2;
+dth1_0=0;
+dth2_0=0;
 
 z0_arm=[th1_0; th2_0; dth1_0; dth2_0];
 
 % Pancake Initial Conditions
 %Start the pancake at the end of the arm
 pan_position= get_pan_position(z0_arm,p.arm); %Forward Kinematics of initial arm configuration
-x0=pan_position(1,3); %place the pancake at the center of mass
+x0=pan_position(1,3); %place the pancake at the center of mass of the pan
 y0=pan_position(2,3);
 th0=pi/2+th1_0+th2_0;
 dx0=0; dy0=0; dth0=0;
@@ -26,87 +26,14 @@ z0= struct('arm',z0_arm,'pk',z0_pk);
 %% Define Simulation Parameters
 tf=.5;
 dt=.00001;
-% ub=[.5 .2 -1 -1];
-% T1=[.5 .2 -1 -1];
-% T2=[.5 .4 -1 -1];
-T1 = [.6 .6 -0.5 -0.5];
-T1 = [.6 .6 -1 -1];
-T2 = [-.1 .73 .5 -1];
-% T1=[.6 .5 -.5 -.5];
-% T2=[-.1 .765 .5 -1];
-% T1 = [.65 .4 -.5 -.5];
-% T2 = [-.1 .6 .55 -.5];
-ctrl.T1=T1; ctrl.T2=T2; %ctrl.tf=tf/2;
-
-% x=[tf ctrl.tf T1 T2];
-% x= [0.5014    0.2798    0.4891    0.4919   -0.4766   -0.4811   -0.0437    0.6454    0.4135   -0.9890];
-% x=[0.4993    0.5890    0.7787    0.4168   -0.6808    0.3996    0.4231   -0.6759];
-% tf=x(1);
-% ctrl.tf=x(2);
-% ctrl.T1=x(3:5); %BUG HERE
-% ctrl.T2=x(6:end);
-% bezier_pts=4;
 bezier_pts=3;
-% x = [T1 T2];
-ctrl.tf=.25;
-% ctrl.T1=[.5 .5 -.5 -.5];
 
-% ctrl.T1=x(1:1+bezier_pts-1); %BUG HERE
-% ctrl.T2=x(1+bezier_pts:end);
-x = [-0.0238    0.5936    0.4211   -0.7933];
-x= [-0.0394    0.6270    0.4255   -0.8444];
-x=[-0.0445    0.6433    0.4351   -0.8695]; %Good initial guess for last system
-x=[-0.0445    0.5    0.18   -0.9695]; % 
-x=[0.0020    0.2088    0.4632   -0.5695];
-% x=[0.0070    0.2050    0.4660   -0.5627]; %opt
-x=[0.0070    0.2050    0.4660   -0.5627];
-x=[ 0.1062    0.1918    0.2082   -0.4769]; %solution w new torque law
-% x=[-0.0496    0.6421    0.4126   -0.8877];
-x = [ 0.0070    0.2050    0.4660   -0.5627]; % energy = 0.0228, converged to infeasible point
-
-ctrl.T1 = [.38 .38 -.5];
-% x = [-0.05    0.5   -0.2];
-x = [-0.049 0.61 -0.5];
-% x = [-0.0393    0.4708   -0.1909]; % no objective function
-% x = [-0.0705    0.3681   -0.0237]; % energy obj function for th1_0 = pi/4, dt = 0.001
-
-% ctrl.T1=-3*[.07 .45 -.25];
-% x=-[-.3 .55 0];
-
-x = [0.0401    0.4217   -0.4086]; % minimize energy = 0.0153, T1 fixed
-ctrl.T2 = x;
-extra=[tf ctrl.tf ctrl.T1];
-% optimizating both torque values
-% th1_0 = pi/4, erergy = 0.0130
-% ctrl.T1 = [0.3440    0.3737   -0.4953]; 
-% ctrl.T2 = [0.0555    0.3786   -0.4141];
-%
-% ctrl.T1 = [0.3440    0.3737   -0.4953]; 
-% ctrl.T1=[.3 .3 -.4];
-% ctrl.T2 = [.5    .8   -0.71];
 ctrl.T1=[0.3440    0.3737   -0.4953]; %pi/4 optimization
-ctrl.T2 = [0.0555    0.3786   -0.4141];
 ctrl.T2 = [0.0555    0.39   -0.4141];
 x=[ctrl.T1 ctrl.T2];
-
-% x=[-.0440    0.3737   -0.6953 0.4  -.6  -.8]; %initial guess for pi/8
-% x=[-0.0445    0.3646   -0.6857    0.4900   -0.5412   -0.7752];
-% x=[0.0344    0.3055   -0.4027    0.4197   -0.4103   -0.4306]; %optimal for pi/8 .0052
-% x=[-0.0445    0.3646   -0.6857    0.4900   -0.5412   -0.7752]; %optimal for pi/8 .0057 new one that works
-% x=[-0.0241    0.2376   -0.5760    0.3430   -0.1265   -0.5559]; %optimal for pi/8 .0037 
-% x=[0.9968    0.5230   -0.3528    0.0021    0.5254   -0.2603];
-% x=[0.2259    0.3167   -0.5044    0.0729    0.3438   -0.4326]; %pi/2
-% optimized for both torques( 0.0057 energy)
-% x=[0.2259    0.3167   -0.5044    0.0929    0.4   -0.926];
-% x=[0.1930    0.3028   -0.5057    0.0915    0.4028   -0.9181]; %3*pi/8 optimized for both torques
-% x=[0.1259    0.2560   -0.5128    0.1028    0.3722   -0.8829]; %pi/2
-% optimized with 3*pi/8 initial guess (.036 energy)
-
-% x=[-0.0197    0.1121   -0.1579    0.2445750   -0.0741   -0.3151]; %HAD TO CHANGE OPTIMIZED TORQUE
 ctrl.T1=x(1:bezier_pts); 
 ctrl.T2=x(1+bezier_pts:end);   
 
 %% Run and animate simulation
 [arm, pk, contact_pts, tspan, uout, energy]=simulate_system(z0, p, ctrl, tf, dt);
-energy
 animate_system(arm, pk, contact_pts, p, tspan);

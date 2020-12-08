@@ -32,8 +32,7 @@ contact=false;
 last_contact=false;
 iphase_list = 1;
 complex_contact=false;
-% z_out = zeros(4,num_steps);
-% z_out(:,1) = z0;
+
 for i=1:num_steps-1
     %Get input torque for the arm
     
@@ -44,10 +43,7 @@ for i=1:num_steps-1
     %Move pancake Should we move pancake before applying force
     z_pk=step_pancake(z_out_pk(:,i),p.pk, u_pk, dt);
     
-    %%%%% LAURA %%%%%
-    %Check collision (CONTACT MODELING) Calculate Fx, Fy and Tau
-%     u_pk=[0;0;0];
-%     if sum(z_arm(1:2))<pi/2 +.01
+    %Check collision (CONTACT MODELING) Calculate u_pk= [Fx, Fy and Tau]
     [u_pk, p_contact]=simulate_contact(z_arm,z_pk, p,complex_contact);
     
     if sum(isnan(p_contact))==4
@@ -73,7 +69,7 @@ for i=1:num_steps-1
         complex_contact=true;
     end
 %     end
-    %%%%% LAURA %%%%%
+
     
     %Apply new torque to pancake
     z_pk=step_pancake(z_out_pk(:,i),p.pk, u_pk, dt);
@@ -93,30 +89,22 @@ end
 
 %% Control
 function u = control_laws(t,z,p,ctrl,state,z_pk)
-    if state <2 && t<ctrl.tf %pancake is in contact w the pan
+    if state <2 && t<ctrl.tf %pancake is in contact w the pan -> "track" Bezier curve torques
         u1 = BezierCurve(ctrl.T1, t/ctrl.tf);
         u2 = BezierCurve(ctrl.T2, t/ctrl.tf);
-    else %pancake is in flight -> control law
+    else %pancake is in flight -> pancake tracking controller
         %Go back to some desired position
         th1 = z(1,:);
         th2 = z(2,:);  
         dth1 = z(3,:);     
         dth2 = z(4,:);           % leg angular velocity
-
-        th1_d = -pi/6;             % desired leg angle
-        th2_d = pi/6+pi/2;
-        k1 = 5;  k2 = 5;                % stiffness (N/rad)
-        b1 = .5; b2 = .5;                % damping (N/(rad/s))
-        
-        %Apply joint pd control
-        u1 = -k1*(th1-th1_d) - b1*dth1;% apply PD control
-        u2 = -k2*(th2-th2_d) - b2*dth2;% apply PD control
         
         %should take in pancake positon in x
         %should convert that to desired th1 and th2 should be calculated
         %based on that
         k1 = 20;  k2 = 20;                % stiffness (N/rad)
 %         k1 = 15;  k2 = 15;                % stiffness (N/rad)
+        b1 = .5; b2 = .5;                % damping (N/(rad/s))
         p_arm=p.arm;
         l1=p_arm(3);
         c=p_arm(end)+(p_arm(4)-p_arm(end))/2+.03; %I have no idea why .03 works
@@ -132,7 +120,6 @@ function u = control_laws(t,z,p,ctrl,state,z_pk)
         th2_d=-th1_d+pi/2;
         u1 = -k1*(th1-th1_d) - b1*dth1;% apply PD control
         u2 = -k2*(th2-th2_d) - b2*dth2;% apply PD control
-%         return
         
     end
     u=[u1;u2];
