@@ -1,8 +1,8 @@
 # 274_pan_flipping
 Repository to hold all the MATLAB Simulation and Hardware Interface code for team 1's 2.74 Fall 2020 final project  
-  
-![Simulation](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/standard_flip.gif =100x20 "Simulation1")  <br/>
-![Hardware](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/hardware_flip1.gif "Hardware1") <br/>
+
+<img src="/Presentation_Visuals/standard_flip.gif" width="350" height="350"/> <img src="/Presentation_Visuals/hardware_flip1.gif" width="350" height="350"/> <br/>
+
 See our [Project_Poster here](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/team1_poster.pdf).
   
 ## MDEB Details ##
