@@ -5,5 +5,6 @@
 % same name but with different contents.
 
 % pwd is the Present Working Directory
+addpath([pwd '/Utils/'])
 addpath([pwd '/../MATLAB Simulation/AutoDerived/Arm'])
 addpath([pwd '/../MATLAB Simulation/Modeling'])
