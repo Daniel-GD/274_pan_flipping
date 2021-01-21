@@ -3,6 +3,7 @@ Repository to hold all the MATLAB Simulation and Hardware Interface code fot MIT
 
 <img src="/Presentation_Visuals/standard_flip.gif" width="400" height="400"/> <img src="/Presentation_Visuals/hardware_flip1.gif" width="400" height="400"/> <br/>
 
+## Project Poster ##
 See our [Project_Poster here](https://github.com/Daniel-GD/274_pan_flipping/blob/main/Presentation_Visuals/team1_poster.pdf).
 
 ## MDEB Details ##
